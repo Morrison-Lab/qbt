@@ -21,3 +21,7 @@ jobs:
       fail: false
       # README.md is generated from README.Rmd; fix findings at the source.
       paths-ignore: 'README.md'
+      # Without a base-ref the list-item merge splice check skips itself
+      # rather than reflagging pre-existing list items. Scope it to the PR
+      # diff so it actually runs; it stays blocking on newly-added splices.
+      base-ref: ${{ github.event.pull_request.base.sha }}
