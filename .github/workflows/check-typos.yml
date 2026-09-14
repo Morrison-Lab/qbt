@@ -1,0 +1,19 @@
+# Diff-scoped spellcheck of the files the R-package spellcheck cannot see:
+# Quarto site pages, CONTRIBUTING.md-class Markdown, YAML, and code comments.
+# Uses crate-ci/typos, a corrections-list checker, so it needs no wordlist.
+# Diff-scoped, so it only flags what a PR itself adds -- a first run over an
+# existing repo does not reflag years of drift.
+name: Check typos
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    permissions:
+      contents: read
+    uses: Morrison-Lab/gha/.github/workflows/check-typos.yml@v2

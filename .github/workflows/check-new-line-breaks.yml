@@ -1,0 +1,20 @@
+# Diff-scoped check: flags newly-added Markdown lines packing more than one
+# sentence/clause onto one source line. Only flags what a PR itself adds, so
+# it pairs with lint-markdown without reflagging the existing corpus.
+name: Check new markdown lines for missing semantic breaks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    permissions:
+      contents: read
+    uses: Morrison-Lab/gha/.github/workflows/check-new-line-breaks.yml@v2
+    with:
+      # README.md is generated from README.Rmd; fix line breaks at the source.
+      paths-ignore: 'README.md'
