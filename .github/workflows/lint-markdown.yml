@@ -1,0 +1,23 @@
+# Lints tracked Markdown files with markdownlint-cli2 (bundled default
+# config), plus companion checks that flag long fenced code blocks,
+# list-item merge splices, and blank lines that split a table.
+# Only contents:read is needed (the default), so no permissions block is
+# required.
+name: Lint Markdown
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    uses: Morrison-Lab/gha/.github/workflows/lint-markdown.yml@v2
+    with:
+      # Warn-only for now: this is the first run over a pre-existing tree.
+      # Flip to blocking once the backlog it reports is cleared.
+      fail: false
+      # README.md is generated from README.Rmd; fix findings at the source.
+      paths-ignore: 'README.md'

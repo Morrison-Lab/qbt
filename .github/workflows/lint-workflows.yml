@@ -1,0 +1,19 @@
+# Audits GitHub Actions workflows and composite actions with actionlint
+# (syntax/semantics) and zizmor (security). Only contents:read is needed
+# (the default), so no permissions block is required.
+name: Lint Workflows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    uses: Morrison-Lab/gha/.github/workflows/lint-workflows.yml@v2
+    with:
+      # Warn-only for now: first run over a pre-existing tree, and the
+      # bespoke preview/publish workflows predate this audit.
+      fail: false

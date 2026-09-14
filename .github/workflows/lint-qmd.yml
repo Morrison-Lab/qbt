@@ -1,0 +1,19 @@
+# Lints the prose sections of tracked .qmd Quarto files with markdownlint.
+# Code chunks are stripped before linting; only prose is checked. YAML front
+# matter is left intact and skipped natively by markdownlint.
+# Only contents:read is needed (the default), so no permissions block is required.
+name: Lint QMD Prose
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    uses: Morrison-Lab/gha/.github/workflows/lint-qmd.yml@v2
+    with:
+      # Warn-only for now: first run over a pre-existing tree.
+      fail: false

@@ -1,0 +1,23 @@
+# Scans narrative prose in Markdown and Quarto files for AI-generated tell
+# density and rhetorical markers. Advisory by design -- reports in the run
+# summary without blocking.
+name: Check AI Tells
+
+on:
+  pull_request:
+    paths:
+      - '**.md'
+      - '**.qmd'
+      - '**.Rmd'
+  push:
+    branches: [main]
+    paths:
+      - '**.md'
+      - '**.qmd'
+      - '**.Rmd'
+
+jobs:
+  check-ai-tells:
+    uses: Morrison-Lab/gha/.github/workflows/check-ai-tells.yml@v2
+    with:
+      fail: false

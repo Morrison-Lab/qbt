@@ -1,0 +1,24 @@
+# Housekeeping half of the PR-preview family: periodically deletes gh-pages
+# preview directories for PRs that are no longer open. The calling job grants
+# contents:write so it can commit the deletions back to gh-pages.
+#
+# NOTE: Do NOT name a `concurrency:` group `gh-pages` in this caller --
+# neither a top-level block nor one on the calling job. The reusable workflow
+# already serializes its gh-pages modifications on its own `cleanup` job with
+# that group name, and a caller-level block of the same name deadlocks Actions
+# against the nested job (gha#809, gha#811). Any other group name is fine.
+name: Clean up PR Previews
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0' # Weekly on Sunday at midnight UTC
+
+jobs:
+  cleanup:
+    permissions:
+      contents: write
+      pull-requests: read
+    uses: Morrison-Lab/gha/.github/workflows/cleanup-pr-previews.yml@v2
+    # preview-dir defaults to `pr-preview`, which matches the directory
+    # rossjrw/pr-preview-action publishes to in preview.yml.
