@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "extraKnownMarketplaces": {
+    "Morrison-Lab": {
+      "source": {
+        "source": "github",
+        "repo": "Morrison-Lab/ai-config"
+      }
+    },
+    "posit-dev-skills": {
+      "source": {
+        "source": "github",
+        "repo": "posit-dev/skills"
+      }
+    },
+    "sembr": {
+      "source": {
+        "source": "github",
+        "repo": "sembr/skills"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "ai-config@Morrison-Lab": true,
+    "posit-dev@posit-dev-skills": true,
+    "quarto@posit-dev-skills": true,
+    "github@posit-dev-skills": true,
+    "sembr@sembr": true
+  }
+}
