@@ -12,6 +12,8 @@ on:
 
 jobs:
   lint:
+    permissions:
+      contents: read
     uses: Morrison-Lab/gha/.github/workflows/lint-workflows.yml@v2
     with:
       # Warn-only for now: first run over a pre-existing tree, and the

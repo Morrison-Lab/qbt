@@ -18,6 +18,8 @@ on:
 
 jobs:
   check-ai-tells:
+    permissions:
+      contents: read
     uses: Morrison-Lab/gha/.github/workflows/check-ai-tells.yml@v2
     with:
       fail: false

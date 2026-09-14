@@ -13,4 +13,6 @@ on:
 
 jobs:
   check:
+    permissions:
+      contents: read
     uses: Morrison-Lab/gha/.github/workflows/check-junk-files.yml@v2

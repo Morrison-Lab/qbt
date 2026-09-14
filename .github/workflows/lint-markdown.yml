@@ -1,8 +1,6 @@
 # Lints tracked Markdown files with markdownlint-cli2 (bundled default
 # config), plus companion checks that flag long fenced code blocks,
 # list-item merge splices, and blank lines that split a table.
-# Only contents:read is needed (the default), so no permissions block is
-# required.
 name: Lint Markdown
 
 on:
@@ -14,6 +12,8 @@ on:
 
 jobs:
   lint:
+    permissions:
+      contents: read
     uses: Morrison-Lab/gha/.github/workflows/lint-markdown.yml@v2
     with:
       # Warn-only for now: this is the first run over a pre-existing tree.

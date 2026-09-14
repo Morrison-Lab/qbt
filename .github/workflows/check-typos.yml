@@ -3,7 +3,6 @@
 # Uses crate-ci/typos, a corrections-list checker, so it needs no wordlist.
 # Diff-scoped, so it only flags what a PR itself adds -- a first run over an
 # existing repo does not reflag years of drift.
-# Only contents:read is needed (the default), so no permissions block is required.
 name: Check typos
 
 on:
@@ -15,4 +14,6 @@ on:
 
 jobs:
   check:
+    permissions:
+      contents: read
     uses: Morrison-Lab/gha/.github/workflows/check-typos.yml@v2

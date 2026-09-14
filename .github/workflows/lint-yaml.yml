@@ -1,7 +1,6 @@
 # Lints tracked YAML files with yamllint (bundled default config), plus a
 # companion check that flags long `run:` script blocks in workflow/action
 # YAML as decomposition candidates.
-# Only contents:read is needed (the default), so no permissions block is required.
 name: Lint YAML
 
 on:
@@ -13,6 +12,8 @@ on:
 
 jobs:
   lint:
+    permissions:
+      contents: read
     uses: Morrison-Lab/gha/.github/workflows/lint-yaml.yml@v2
     with:
       # Warn-only for now: first run over a pre-existing tree.
