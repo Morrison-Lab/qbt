@@ -9,7 +9,7 @@ the template) with:
 .github/scripts/apply-rulesets.sh owner/repo      # explicit target
 ```
 
-The script is idempotent — re-running it updates a ruleset in place when
+The script is idempotent - re-running it updates a ruleset in place when
 one with the same `name` already exists, rather than creating a duplicate.
 
 Requirements:
@@ -22,21 +22,21 @@ Requirements:
 
 Applies to the default branch:
 
-- **Required PR before merging** — no direct pushes to `main`. Note that
+- **Required PR before merging** - no direct pushes to `main`. Note that
   `required_approving_review_count` is `0`: a PR is required, but **zero
   approvals** are needed, so authors can self-merge. This enforces process
   (PR + status checks) but not peer review. Raise this value if you want to
   require approvals before merge.
-- **Required status checks** (not strict — branch does not need to be up
+- **Required status checks** (not strict - branch does not need to be up
   to date): Spellcheck, check-chars, build-deploy. The `build-deploy`
   context is produced by `preview.yml` on PRs (publish.yml only runs on
   push-to-main, so it can't satisfy this); if you rename either job, the
-  ruleset gate will hang. `check-links.yml` is intentionally excluded — it checks external URLs,
+  ruleset gate will hang. `check-links.yml` is intentionally excluded - it checks external URLs,
   which can fail due to transient network issues or link rot unrelated to
   the PR. Requiring it as a merge gate would block merges on external
   failures outside the PR author's control.
 - **No force-pushes, no branch deletion.**
-- **Bypass** in `pull_request` mode for the Maintain role (role id 2) —
+- **Bypass** in `pull_request` mode for the Maintain role (role id 2) -
   Maintainers can merge via a PR they authored, but cannot push directly.
 
 ## Editing the ruleset

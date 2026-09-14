@@ -30,7 +30,7 @@ need to quickly start writing your own book.
 
 ### Using this template
 
-1.  Click the “Use this template” button at the top of this repository
+1.  Click the "Use this template" button at the top of this repository
 2.  Name your new repository and create it
 3.  Clone your new repository to your local machine
 
@@ -60,7 +60,7 @@ quarto --version
     - Chapter list
     - Theme and styling options
 
-2.  **Modify `index.qmd`** to create your book’s homepage/introduction
+2.  **Modify `index.qmd`** to create your book's homepage/introduction
 
 3.  **Edit or create chapters** (`.qmd` files):
 
@@ -106,7 +106,7 @@ publishes your book to GitHub Pages when you push to the main branch.
 1.  **Enable GitHub Pages** in your repository:
 
     - Go to Settings → Pages
-    - Under “Build and deployment”, set Source to “GitHub Actions”
+    - Under "Build and deployment", set Source to "GitHub Actions"
 
 2.  **Apply branch rulesets** (requires admin access):
 
@@ -162,7 +162,7 @@ unlabeled
 **Labels:**
 
 - Add `no-preview-highlights` label to disable change highlighting if
-  it’s glitchy
+  it's glitchy
 
 ### ✅ Spell Check Workflow (`check-spelling.yaml`)
 
@@ -181,7 +181,7 @@ Checks R code style and quality using the lintr package.
 
 ### 🤖 Copilot Setup Steps (`copilot-setup-steps.yml`)
 
-Configures the GitHub Copilot coding agent’s environment with Quarto and
+Configures the GitHub Copilot coding agent's environment with Quarto and
 TinyTeX.
 
 **Triggers:** Workflow dispatch, changes to the setup file
@@ -265,8 +265,8 @@ Automatically checks that all URLs in your book are reachable:
 To manually trigger the link checker:
 
 1.  Go to the Actions tab in your repository
-2.  Select “Check Links” workflow
-3.  Click “Run workflow”
+2.  Select "Check Links" workflow
+3.  Click "Run workflow"
 
 ## Writing Content
 
