@@ -154,7 +154,7 @@
     "href": "appendix-document-metadata.html",
     "title": "Document Generation Metadata",
     "section": "",
-    "text": "This document was generated from the following git commit:\n\nBranch: claude/fix-non-standard-chars\nCommit: 12244c4\nFull commit hash: 12244c491d7e059a40ab7eee6763251345ba1214\nCommit date: 2026-09-14 15:27:22 -0700\n\nWhen transferring edits from this document back to the Quarto source files, use this commit information to set up the PR correctly and account for any commits that have been added since this document was generated.",
+    "text": "This document was generated from the following git commit:\n\nBranch: claude/fix-non-standard-chars\nCommit: 3c862ae\nFull commit hash: 3c862aeb1cbcf85a9e214b2b82a6c85936cfd550\nCommit date: 2026-09-14 22:39:22 +0000\n\nWhen transferring edits from this document back to the Quarto source files, use this commit information to set up the PR correctly and account for any commits that have been added since this document was generated.",
     "crumbs": [
       "Appendices",
       "Document Generation Metadata"
