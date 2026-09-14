@@ -73,3 +73,6 @@ renv/staging/
 # Lychee link checker
 .lycheecache/
 lychee-output/
+
+# Claude Code (personal overrides; project settings are committed)
+.claude/settings.local.json
