@@ -238,10 +238,12 @@ jobs:
           # either, and the run went green having published no change.
           #
           # Note the scope: this deploys on ANY label change, not only
-          # `no-preview-highlights`, because the input cannot see which label
-          # moved. The render already ran unconditionally on every label
-          # event before this change, so the added cost is the short deploy,
-          # not the render.
+          # `no-preview-highlights`. Narrowing it is possible --
+          # `github.event.label.name` is populated on labeled/unlabeled
+          # events and could be tested here -- but it is not worth the added
+          # conditional: the render already ran unconditionally on every
+          # label event before this change, so the extra cost of not
+          # narrowing is the short deploy, not the render.
           action: ${{ github.event.action == 'closed' && 'remove' || 'deploy' }}
           preview-branch: ${{ env.PREVIEW_BRANCH }}
           comment: "false"
