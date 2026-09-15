@@ -27,10 +27,20 @@ updates:
       # `summary.yml`. A major-version bump here is therefore not an upgrade
       # but a silent opt-in to a different capability contract, and it would
       # undo the `summary.yml@v2` -> `@v1` correction this file ships
-      # alongside (qbt#51). gha's own dependabot.yml excludes its first-party
-      # self-references for the same reason.
+      # alongside (qbt#51).
       #
-      # Minors and patches still flow; only majors are frozen.
+      # gha's own dependabot.yml carries no equivalent rule, and does not need
+      # one: there its `Morrison-Lab/gha/*` references are self-references
+      # within the same repo, and its config comment records them as needing
+      # "no Dependabot coverage" because they are major-tag-tracked rather
+      # than SHA-pinned. Here gha is an external repository, so its major tags
+      # are exactly what Dependabot will see and offer to bump -- which is why
+      # this repo needs the rule that gha does not.
+      #
+      # Minors and patches still flow; only majors are frozen. Confirm on the
+      # first real Dependabot run that this glob matches the full
+      # `owner/repo/.github/workflows/file.yml` dependency name, which is not
+      # explicitly documented.
       - dependency-name: "Morrison-Lab/gha/*"
         update-types: ["version-update:semver-major"]
     commit-message:
