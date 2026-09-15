@@ -14,6 +14,14 @@ on:
   schedule:
     - cron: '0 0 * * 0' # Weekly on Sunday at midnight UTC
 
+# Serialize cleanup runs against each other, so a manual dispatch overlapping
+# the weekly schedule does not race. The group name is deliberately NOT
+# `gh-pages`: per the note above, that name deadlocks this caller against the
+# reusable workflow's own internal job, which already holds it.
+concurrency:
+  group: gh-pages-cleanup
+  cancel-in-progress: false
+
 jobs:
   cleanup:
     permissions:
@@ -22,3 +30,8 @@ jobs:
     uses: Morrison-Lab/gha/.github/workflows/cleanup-pr-previews.yml@v2
     # preview-dir defaults to `pr-preview`, which matches the directory
     # rossjrw/pr-preview-action publishes to in preview.yml.
+    with:
+      # Orphan-squash gh-pages to a single commit after pruning, so deleted
+      # preview snapshots stop accumulating in that branch's history. Both
+      # language.revitalization and lab-manual enabled this independently.
+      compact-history: true

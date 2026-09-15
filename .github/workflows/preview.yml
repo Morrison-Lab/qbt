@@ -221,6 +221,19 @@ jobs:
         uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: docs
+          # Without this, `action` defaults to `auto`, which by the action's
+          # own documentation "will deploy the preview on
+          # pull_request.types.synchronize and .opened events, and remove it
+          # on .closed events. It will not do anything for all other events."
+          #
+          # This workflow also triggers on `reopened`, `labeled` and
+          # `unlabeled` -- the last two deliberately, so toggling
+          # `no-preview-highlights` re-renders the preview. Under `auto` all
+          # three render the whole book (up to 45 minutes) and then deploy
+          # nothing, silently: the sticky-comment steps are gated on
+          # `deployment-action == 'deploy'`, so they do not fire either, and
+          # the run goes green having published no change.
+          action: ${{ github.event.action == 'closed' && 'remove' || 'deploy' }}
           preview-branch: ${{ env.PREVIEW_BRANCH }}
           comment: "false"
           wait-for-pages-deployment: true
