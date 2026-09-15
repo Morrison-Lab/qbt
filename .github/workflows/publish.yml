@@ -58,6 +58,17 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GH_TOKEN is the one that actually does the work here, and it is
+          # not a duplicate of the line above. `tinytex: true` runs
+          # `quarto install tool tinytex`, which resolves the latest
+          # rstudio/tinytex-releases release through the GitHub API. Quarto
+          # reads ONLY GH_TOKEN for that call (src/tools/github.ts:
+          # `Deno.env.get("GH_TOKEN") ? {headers: {Authorization: ...}} :
+          # undefined`), so with GITHUB_TOKEN alone the request goes out
+          # unauthenticated and shares the runner IP's 60-per-hour limit --
+          # producing an intermittent `403 - Forbidden` that passes on
+          # re-run and looks like a flake (#66).
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tinytex: true
 
