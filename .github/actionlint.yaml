@@ -1,0 +1,17 @@
+# actionlint configuration.
+#
+# Suppress a single false positive: actionlint does not yet know the
+# `concurrency.queue` key, which is documented GitHub workflow syntax
+# (`queue: single` | `queue: max`). preview.yml and publish.yml both use
+# `queue: max` to stop a pending gh-pages deploy being cancelled when another
+# run joins the shared group -- see the comments at those call sites.
+#
+# Tracked upstream as rhysd/actionlint#657; still unfixed in v1.7.12, the
+# current release. Remove this file once a release recognizes the key.
+#
+# The pattern is deliberately narrow: it matches only this one message, so
+# every other actionlint finding in these workflows still reports normally.
+paths:
+  .github/workflows/*.yml:
+    ignore:
+      - 'unexpected key "queue" for "concurrency" section.*'

@@ -155,11 +155,17 @@ jobs:
     # they queue instead. It cannot be combined with cancel-in-progress: true,
     # which this group does not use.
     #
-    # actionlint 1.7.12 (the current release) does not yet know the `queue`
-    # key and reports `unexpected key "queue"`. The key is documented GitHub
-    # workflow syntax; lint-workflows.yml runs with `fail: false`, so this
-    # surfaces as a warning rather than a failure. It is a linter gap, not a
-    # workflow error.
+    # Availability: `queue` is GitHub-hosted (github.com / GHEC) syntax and is
+    # NOT available on GitHub Enterprise Server. A GHES fork of this template
+    # falls back to the default single-pending behaviour described above.
+    #
+    # actionlint does not yet know the `queue` key and reports it as an
+    # unexpected key (rhysd/actionlint#657, still open in v1.7.12, the current
+    # release). Suppressed narrowly in .github/actionlint.yaml rather than
+    # left as standing noise -- lint-workflows.yml runs with `fail: false`
+    # here, but the reusable workflow it calls defaults to `fail: true`, so a
+    # downstream book that does not carry that override would otherwise get a
+    # hard lint failure from a false positive.
     concurrency:
       group: gh-pages
       cancel-in-progress: false

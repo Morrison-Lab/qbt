@@ -21,7 +21,7 @@ jobs:
     # unrelated to main. Since this job had no concurrency group at all
     # before, omitting queue: max would REGRESS it: a publish of main could
     # be dropped outright rather than merely delayed. See the matching
-    # comment in preview.yml for the actionlint caveat.
+    # comment in preview.yml for the GHES-availability and actionlint caveats.
     concurrency:
       group: gh-pages
       cancel-in-progress: false
