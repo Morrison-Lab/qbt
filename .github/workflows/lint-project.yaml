@@ -11,6 +11,7 @@ permissions: read-all
 
 jobs:
   lint-project:
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}

@@ -33,7 +33,7 @@ jobs:
       contents: read
     
     # Timeout after 55 minutes (max is 59 for copilot-setup-steps)
-    timeout-minutes: 55
+    timeout-minutes: 50
     
     steps:
       # Checkout code - Copilot will do this automatically if we don't,

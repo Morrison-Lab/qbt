@@ -91,3 +91,22 @@ Before requesting review or marking work as complete:
 - **Fix any rendering issues** before requesting review
 
 This ensures that reviewers see working, polished output rather than discovering basic rendering problems.
+
+## CI Workflows
+
+### Job Time Limits
+
+Every job this repository defines must set `timeout-minutes`, and the value must
+be **no more than 50**. Without it a job inherits GitHub's 6-hour default, so a
+hung step burns runner minutes for hours before anyone notices.
+
+- **Add `timeout-minutes` to every new job**, sized to the work: 20 for lint and
+  check jobs, 45 for jobs that render or deploy the book
+- **Never exceed 50**, even for slow jobs: a job that genuinely needs longer is
+  a signal to split it, not to raise the ceiling
+
+Jobs that call a reusable workflow are the exception, and not by choice: GitHub
+rejects `timeout-minutes` on a job that uses `uses:`, so the limit has to live
+in the reusable workflow itself. The `Morrison-Lab/gha` workflows this repo
+calls already set their own, so those callers need nothing here, and do not try to
+add a limit to them, as the workflow will fail to parse.
