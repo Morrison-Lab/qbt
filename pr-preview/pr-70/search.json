@@ -154,7 +154,7 @@
     "href": "appendix-document-metadata.html",
     "title": "Document Generation Metadata",
     "section": "",
-    "text": "This document was generated from the following git commit:\n\nBranch: claude/fix-59-backport-template-improvements\nCommit: 8faae39\nFull commit hash: 8faae391c7129c1b2b016fd373c117e895163bc1\nCommit date: 2026-09-15 09:39:28 -0700\n\nWhen transferring edits from this document back to the Quarto source files, use this commit information to set up the PR correctly and account for any commits that have been added since this document was generated.",
+    "text": "This document was generated from the following git commit:\n\nBranch: claude/fix-59-backport-template-improvements\nCommit: 18841ab\nFull commit hash: 18841ab96a1f03963fe1f1afd1c793b10b0d189c\nCommit date: 2026-09-15 17:55:46 +0000\n\nWhen transferring edits from this document back to the Quarto source files, use this commit information to set up the PR correctly and account for any commits that have been added since this document was generated.",
     "crumbs": [
       "Appendices",
       "Document Generation Metadata"
