@@ -16,7 +16,10 @@ user_agent = "Mozilla/5.0 (compatible; Lychee/0.15; +https://github.com/lycheeve
 # rejects an automated checker, so treating them as broken produces false
 # positives a book author cannot act on:
 #   403 - blocks automated checkers (biorxiv.org, sciencedirect.com, medium.com)
-#   405 - rejects HEAD requests but serves GET fine (niaid.nih.gov)
+#   405 - Method Not Allowed from servers that reject the checker's request
+#         (niaid.nih.gov). Note this is NOT the usual "rejects HEAD" case:
+#         lychee runs with its default GET here, no --method override
+#         anywhere in the chain, so HEAD is never sent.
 #   415 - rejects lychee's request media type (equator-network.org)
 #   429 - rate-limited, not broken
 #   502 - intermittent gateway errors (Springer)
