@@ -9,6 +9,17 @@ jobs:
   build-deploy:
     timeout-minutes: 45
     runs-on: ubuntu-latest
+    # Serialize gh-pages writes against the PR-preview deploys and the weekly
+    # preview cleanup, which target the same branch. Without a shared group,
+    # a publish and a preview deploy push concurrently and one of them loses
+    # the race (see issue #62). cancel-in-progress: false queues rather than
+    # kills, so no publish of main is silently dropped. Note that GitHub
+    # retains only ONE pending run per group, superseding older pending runs;
+    # that is acceptable here because a superseded publish is always followed
+    # by a newer one rendering the same branch.
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: false
     permissions:
       contents: write
     steps:

@@ -31,7 +31,12 @@ Applies to the default branch:
   to date): Spellcheck, check-chars, build-deploy. The `build-deploy`
   context is produced by `preview.yml` on PRs (publish.yml only runs on
   push-to-main, so it can't satisfy this); if you rename either job, the
-  ruleset gate will hang. `check-links.yml` is intentionally excluded - it checks external URLs,
+  ruleset gate will hang. `preview.yml` renders in a `build` job and writes
+  to `gh-pages` in a separate `deploy` job, so `build-deploy` is now a small
+  aggregator job that reports both of their results under the name the
+  ruleset requires. It fails when either dependency is anything other than
+  `success`, because GitHub counts a *skipped* required check as satisfied.
+  `check-links.yml` is intentionally excluded - it checks external URLs,
   which can fail due to transient network issues or link rot unrelated to
   the PR. Requiring it as a merge gate would block merges on external
   failures outside the PR author's control.

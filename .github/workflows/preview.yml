@@ -12,12 +12,21 @@ on:
       - unlabeled
 
 jobs:
-  build-deploy:
+  # Tier 1: render. Read-only, and superseded by a newer commit on the same PR
+  # -- there is no point finishing a render whose output is already stale.
+  build:
     timeout-minutes: 45
     runs-on: ubuntu-latest
+    # Keyed on the ref so each PR gets its own group: a push to PR A must not
+    # cancel PR B's render. cancel-in-progress: true because a stale render is
+    # worthless, unlike a stale deploy (see the deploy job).
+    concurrency:
+      group: preview-${{ github.ref }}
+      cancel-in-progress: true
+    # Renders and post-processes local files only; nothing here writes to the
+    # repository. All writes happen in the deploy job below.
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
@@ -88,6 +97,70 @@ jobs:
           HTML_DIR: ./docs
           PREVIEW_CHANGED_CHAPTERS: ${{ env.PREVIEW_CHANGED_CHAPTERS }}
 
+      # Hand the rendered site to the deploy job. include-hidden-files matters:
+      # the default excludes dotfiles, and a Quarto site can legitimately ship
+      # them, which would otherwise be silently missing from every preview.
+      - name: Upload rendered site
+        uses: actions/upload-artifact@v7
+        with:
+          name: pr-preview-site
+          path: docs
+          retention-days: 1
+          include-hidden-files: true
+          if-no-files-found: error
+
+  # Tier 2: publish to gh-pages. Short, and the only part that writes.
+  deploy:
+    needs: build
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    # Serialize every writer to gh-pages -- PR preview deploys, preview
+    # removals, main-site publishes (publish.yml) and the weekly preview
+    # cleanup (cleanup-pr-previews.yml, which already uses this group name
+    # inside the gha reusable workflow it calls). Concurrency groups are
+    # repository-scoped, so naming the group `gh-pages` everywhere puts all of
+    # them in one queue.
+    #
+    # Why this is the fix: GitHub Pages builds gh-pages one commit at a time,
+    # and a commit landing while a build is in flight supersedes it, so the
+    # older build reports `errored`. `wait-for-pages-deployment: true` below
+    # then polls that build and fails the step -- even though the git push
+    # itself succeeded. Measured over the 100 most recent Pages builds on this
+    # repo: successful builds take 29-75s, and 26 of the 27 errored builds had
+    # another gh-pages commit land within 38s, while zero successful builds
+    # did. Serializing the writers removes the overlap that causes it.
+    #
+    # cancel-in-progress: false because a cancelled deploy is not harmless the
+    # way a cancelled render is -- it would abandon a half-written gh-pages
+    # state. Note GitHub keeps only ONE pending run per group and supersedes
+    # older pending ones; that is safe here because a superseded deploy is
+    # always followed by a newer deploy of the same PR.
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # fetch-depth: 0 preserves the checkout this job was split out of, so
+      # the split changes only WHERE the deploy runs and not what it sees.
+      # (gha's own preview-deploy job runs pr-preview-action at the default
+      # depth of 1, so depth is very likely not load-bearing here -- but
+      # this PR is about the race, and matching the prior behaviour keeps
+      # that the only variable.)
+      # Submodules are deliberately omitted: this job publishes the rendered
+      # site downloaded below and never reads the source tree.
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Download rendered site
+        uses: actions/download-artifact@v8
+        with:
+          name: pr-preview-site
+          path: docs
+
       - name: Deploy PR Preview
         id: preview-step
         if: github.event_name == 'pull_request'
@@ -119,3 +192,32 @@ jobs:
                 :---:
                 Preview removed because the pull request was closed.
                 ${{ steps.preview-step.outputs.action-start-time }}
+
+  # Preserves the `build-deploy` required status check named in
+  # .github/rulesets/main.json. Splitting the old single `build-deploy` job in
+  # two would otherwise retire that context, and the ruleset would wait on a
+  # check no job ever reports again -- hanging the merge gate on every PR.
+  # See .github/rulesets/README.md, which warns about exactly this.
+  #
+  # A skipped or cancelled dependency is deliberately NOT treated as a pass:
+  # GitHub counts a *skipped required check* as satisfied, so reporting this
+  # job's own success unconditionally would let a PR whose render failed
+  # merge behind a green gate.
+  build-deploy:
+    needs: [build, deploy]
+    if: always()
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Report preview pipeline result
+        env:
+          BUILD_RESULT: ${{ needs.build.result }}
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+        run: |
+          set -euo pipefail
+          echo "build=$BUILD_RESULT deploy=$DEPLOY_RESULT"
+          failed=0
+          [ "$BUILD_RESULT" = "success" ] || { echo "::error::preview build did not succeed ($BUILD_RESULT)"; failed=1; }
+          [ "$DEPLOY_RESULT" = "success" ] || { echo "::error::preview deploy did not succeed ($DEPLOY_RESULT)"; failed=1; }
+          exit "$failed"
