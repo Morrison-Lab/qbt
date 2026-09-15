@@ -1,0 +1,163 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Your Book Title",
+    "section": "",
+    "text": "Welcome\nThis is a Quarto book template that you can use to create your own book.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "index.html#about-this-book",
+    "href": "index.html#about-this-book",
+    "title": "Your Book Title",
+    "section": "About this book",
+    "text": "About this book\nThis book is built with Quarto, an open-source scientific and technical publishing system. You can use Quarto to create books, websites, blogs, presentations, and more from markdown files.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "index.html#getting-started",
+    "href": "index.html#getting-started",
+    "title": "Your Book Title",
+    "section": "Getting Started",
+    "text": "Getting Started\nTo use this template:\n\nUpdate the configuration: Edit _quarto.yml to change the book title, author, repository URL, and chapters.\nAdd your content: Create new .qmd files for each chapter and add them to the chapters list in _quarto.yml.\nCustomize the style: Modify styles.css to change the appearance of your book.\nAdd references: Update references.bib with your citations.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "index.html#building-the-book",
+    "href": "index.html#building-the-book",
+    "title": "Your Book Title",
+    "section": "Building the book",
+    "text": "Building the book\nTo render the book locally:\nquarto render\nTo preview the book with live reload:\nquarto preview\nThe rendered output will be in the docs/ directory, which can be published to GitHub Pages.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "index.html#publishing-to-github-pages",
+    "href": "index.html#publishing-to-github-pages",
+    "title": "Your Book Title",
+    "section": "Publishing to GitHub Pages",
+    "text": "Publishing to GitHub Pages\nThis template includes a GitHub Actions workflow that automatically builds and publishes your book to GitHub Pages when you push to the main branch.\nTo enable GitHub Pages:\n\nGo to your repository settings\nNavigate to “Pages” in the left sidebar\nUnder “Build and deployment”, set Source to “GitHub Actions”\nPush your changes to the main branch\nThe workflow will automatically build and deploy your book\n\nYour book will be available at https://YOUR-USERNAME.github.io/YOUR-REPO/",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "index.html#license",
+    "href": "index.html#license",
+    "title": "Your Book Title",
+    "section": "License",
+    "text": "License\nAdd your license information here.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "chapter1.html",
+    "href": "chapter1.html",
+    "title": "1  Chapter 1: Introduction",
+    "section": "",
+    "text": "1.1 Section 1.1\nThis is the first chapter of your book. Replace this content with your own.\nAdd your content here.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Chapter 1: Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "chapter1.html#section-1.1",
+    "href": "chapter1.html#section-1.1",
+    "title": "1  Chapter 1: Introduction",
+    "section": "",
+    "text": "1.1.1 Subsection 1.1.1\nYou can include:\n\nLists like this one\nItalic and bold text\nCode snippets\nLinks: Quarto Documentation",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Chapter 1: Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "chapter1.html#section-1.2",
+    "href": "chapter1.html#section-1.2",
+    "title": "1  Chapter 1: Introduction",
+    "section": "1.2 Section 1.2",
+    "text": "1.2 Section 1.2\nYou can also include code blocks:\n# Example Python code\ndef hello_world():\n    print(\"Hello, World!\")\n\nhello_world()\nOr R code:\n# Example R code\nlibrary(ggplot2)\n\nggplot(mtcars, aes(x = wt, y = mpg)) +\n  geom_point() +\n  theme_minimal()",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Chapter 1: Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "chapter1.html#section-1.3",
+    "href": "chapter1.html#section-1.3",
+    "title": "1  Chapter 1: Introduction",
+    "section": "1.3 Section 1.3",
+    "text": "1.3 Section 1.3\nInclude citations using @citationkey format, which references entries in your references.bib file.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Chapter 1: Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "chapter2.html",
+    "href": "chapter2.html",
+    "title": "2  Chapter 2: Advanced Topics",
+    "section": "",
+    "text": "2.1 Mathematical Equations\nThis is the second chapter. Continue building your book with more chapters.\nYou can include mathematical equations using LaTeX syntax:\nInline equation: \\(E = mc^2\\)\nDisplay equation:\n\\[\n\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}\n\\]",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Chapter 2: Advanced Topics</span>"
+    ]
+  },
+  {
+    "objectID": "chapter2.html#custom-macros",
+    "href": "chapter2.html#custom-macros",
+    "title": "2  Chapter 2: Advanced Topics",
+    "section": "2.2 Custom Macros",
+    "text": "2.2 Custom Macros\nThis book uses the d-morrison/macros submodule to provide convenient LaTeX shorthand for statistical and mathematical notation.\n\n2.2.1 Probability and Distributions\nThe normal distribution \\(\\Normal\\paren{\\m, \\ss}\\) can be written using macros as $\\Normal\\paren{\\m, \\ss}$, where \\m expands to \\(\\mu\\) and \\ss expands to \\(\\sigma^2\\).\nA random variable \\(X \\dist \\Normal\\paren{\\mu, \\sigma^2}\\) has expectation \\(\\E{X} = \\mu\\) and variance \\(\\Var{X} = \\sigma^2\\).\n\n\n2.2.2 Regression Notation\nIn linear regression, we estimate \\(\\vbeta\\) using ordinary least squares. The fitted values are \\(\\hy = \\mX \\hb\\), where \\(\\hb = \\inv{\\mX' \\mX} \\mX' \\vy\\).\nThe standard error of \\(\\hb\\) is \\(\\hse{\\hb} = \\hs \\sqrt{\\inv{\\mX' \\mX}}\\).\n\n\n2.2.3 Likelihood and Estimation\nThe log-likelihood function \\(\\llik(\\th)\\) is maximized at the MLE \\(\\hth_{\\text{ML}}\\).\nThe score function is \\(\\score(\\th) = \\deriv{\\th} \\llik(\\th)\\) and the observed information is \\(\\oinf(\\th) = -\\hess(\\th)\\).\n\n\n2.2.4 Logistic Regression\nThe logit link function is \\(\\logitf{\\pi} = \\logt\\paren{\\frac{\\pi}{1 - \\pi}}\\) and its inverse is \\(\\expitf{\\eta} = \\frac{e^\\eta}{1 + e^\\eta}\\).",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Chapter 2: Advanced Topics</span>"
+    ]
+  },
+  {
+    "objectID": "chapter2.html#tables",
+    "href": "chapter2.html#tables",
+    "title": "2  Chapter 2: Advanced Topics",
+    "section": "2.3 Tables",
+    "text": "2.3 Tables\n\n\n\nTable 2.1: Example table caption\n\n\n\n\n\nColumn 1\nColumn 2\nColumn 3\n\n\n\n\nData 1\nData 2\nData 3\n\n\nData 4\nData 5\nData 6",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Chapter 2: Advanced Topics</span>"
+    ]
+  },
+  {
+    "objectID": "chapter2.html#figures",
+    "href": "chapter2.html#figures",
+    "title": "2  Chapter 2: Advanced Topics",
+    "section": "2.4 Figures",
+    "text": "2.4 Figures\nYou can include images by placing them in the images/ directory:\n![Example image caption](images/your-image.png){#fig-example}\nThen reference the figure in text using @fig-example.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Chapter 2: Advanced Topics</span>"
+    ]
+  },
+  {
+    "objectID": "chapter2.html#callouts",
+    "href": "chapter2.html#callouts",
+    "title": "2  Chapter 2: Advanced Topics",
+    "section": "2.5 Callouts",
+    "text": "2.5 Callouts\n\n\n\n\n\n\nNote\n\n\n\nThis is a note callout. Use it to highlight important information.\n\n\n\n\n\n\n\n\nTip\n\n\n\nThis is a tip callout. Share helpful suggestions with your readers.\n\n\n\n\n\n\n\n\nWarning\n\n\n\nThis is a warning callout. Alert readers to potential issues.\n\n\n\n\n\n\n\n\nImportant\n\n\n\nThis is an important callout. Emphasize critical information.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Chapter 2: Advanced Topics</span>"
+    ]
+  },
+  {
+    "objectID": "appendix-document-metadata.html",
+    "href": "appendix-document-metadata.html",
+    "title": "Document Generation Metadata",
+    "section": "",
+    "text": "This document was generated from the following git commit:\n\nBranch: claude/fix-62-preview-concurrency\nCommit: 19a81ea\nFull commit hash: 19a81ea29fcbc4ad1dcd2d7bea2296096680495c\nCommit date: 2026-09-15 06:43:15 +0000\n\nWhen transferring edits from this document back to the Quarto source files, use this commit information to set up the PR correctly and account for any commits that have been added since this document was generated.",
+    "crumbs": [
+      "Appendices",
+      "Document Generation Metadata"
+    ]
+  }
+]
