@@ -32,7 +32,8 @@ jobs:
     permissions:
       contents: read
     
-    # Timeout after 55 minutes (max is 59 for copilot-setup-steps)
+    # Timeout after 50 minutes (qbt#28 caps every job here at 50; the
+    # copilot-setup-steps maximum is 59)
     timeout-minutes: 50
     
     steps:
