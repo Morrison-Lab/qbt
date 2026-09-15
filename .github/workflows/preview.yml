@@ -140,11 +140,18 @@ jobs:
     # and a commit landing while a build is in flight supersedes it, so the
     # older build reports `errored`. `wait-for-pages-deployment: true` below
     # then polls that build and fails the step -- even though the git push
-    # itself succeeded. Measured over the 100 most recent Pages builds on this
-    # repo: successful builds take 29-75s, and 26 of the 27 errored builds had
-    # another gh-pages commit land in under 38s, while no successful build
-    # did (the closest was exactly 38s). Serializing the writers removes the
-    # overlap that causes it.
+    # itself succeeded.
+    #
+    # Measured 2026-09-14 over the 100 most recent Pages builds, from
+    # `gh api "repos/Morrison-Lab/qbt/pages/builds?per_page=100"`, comparing
+    # each build's `created_at` against the next one's: successful builds took
+    # 29-75s, and 26 of the 27 errored builds had another gh-pages commit land
+    # in under 38s, while no successful build did (the closest was exactly
+    # 38s). The figures will drift with deploy volume and are recorded to show
+    # how the mechanism was identified, not as a standing property -- re-run
+    # that same query rather than a different endpoint before citing them, as
+    # the Pages *deployments* API reports a different population.
+    # Serializing the writers removes the overlap that causes it.
     #
     # cancel-in-progress: false because a cancelled deploy is not harmless the
     # way a cancelled render is -- it would abandon a half-written gh-pages
