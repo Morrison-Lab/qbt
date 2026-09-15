@@ -73,6 +73,14 @@ jobs:
       # Set up Quarto - required for rendering the website
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
+        env:
+          # Same reason as preview.yml and publish.yml: `tinytex: true`
+          # resolves the latest rstudio/tinytex-releases release through the
+          # GitHub API, and Quarto reads only GH_TOKEN for that call. Without
+          # it the request is unauthenticated and shares the runner IP's
+          # 60-per-hour limit, giving an intermittent 403 (#66). This job set
+          # no token at all, so it was fully exposed.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tinytex: true
       
