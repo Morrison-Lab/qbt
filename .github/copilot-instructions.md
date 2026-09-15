@@ -112,3 +112,20 @@ GitHub rejects `timeout-minutes` on a job that uses `uses:`.
 The limit therefore has to live in the reusable workflow itself.
 The `Morrison-Lab/gha` workflows this repo calls already set their own.
 Those callers need nothing here, and adding a limit to them makes the workflow fail to parse.
+
+## Agent Sessions
+
+### Check for New Comments Before Finishing
+
+A session can run long enough that new comments arrive while it is working.
+Those comments are not delivered to the session automatically.
+An agent that finishes without looking again will miss them.
+
+Before ending a session, re-read the issue or pull request being worked on:
+
+- **Check for comments posted after the session started**, including reviews and corrections
+- **Address anything new** as if it had been there from the beginning
+- **Reply explaining why** when something will not be actioned, rather than leaving it unanswered
+
+Only finish once nothing is left unanswered.
+The same rule is applied to Claude sessions through `prompt-addendum` in `.github/workflows/claude.yml`.

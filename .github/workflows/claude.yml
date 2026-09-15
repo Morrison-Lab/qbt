@@ -31,3 +31,15 @@ jobs:
     with:
       install-quarto: true        # qbt is a Quarto book
       checkout-submodules: true   # qbt vendors content via submodules
+      # A session can run long enough that new comments arrive while it works,
+      # and they are invisible unless the agent looks again before finishing
+      # (qbt#41).
+      prompt-addendum: |
+        Before you end this session, re-read the issue or pull request you are
+        working on and check for comments posted after you started. A review,
+        a correction, or a change of direction can arrive mid-session, and it
+        is not delivered to you automatically.
+
+        Address anything new the same way you would have if it had been there
+        at the start: make the change, or reply saying why you are not. Only
+        finish once nothing is left unanswered.
