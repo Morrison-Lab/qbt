@@ -1,0 +1,56 @@
+# Keep this template's CI dependencies current.
+#
+# The absence of this file is why the action pins in this repo drifted behind
+# its sibling templates (`rpt`, `qwt`) in the first place: those repos get bump
+# PRs automatically and this one did not, so nothing surfaced the drift until
+# it was audited by hand (qbt#51).
+#
+# Two ecosystems are covered. `github-actions` scans `.github/workflows/`, and
+# `gitsubmodule` covers the `macros` submodule declared in `.gitmodules`, which
+# would otherwise only advance when someone remembered to bump it.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/" # .github/workflows/
+    schedule:
+      interval: "weekly"
+    # Batch all action bumps into one PR per run to keep review noise low.
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    ignore:
+      # First-party `Morrison-Lab/gha` reusable workflows deliberately track
+      # their capability's major tag rather than always being on the newest
+      # one -- see the Versioning section of that repo's README, which records
+      # per-capability audits and states that `@v1` "remains current" for
+      # `summary.yml`. A major-version bump here is therefore not an upgrade
+      # but a silent opt-in to a different capability contract, and it would
+      # undo the `summary.yml@v2` -> `@v1` correction this file ships
+      # alongside (qbt#51).
+      #
+      # gha's own dependabot.yml carries no equivalent rule, and does not need
+      # one: there its `Morrison-Lab/gha/*` references are self-references
+      # within the same repo, and its config comment records them as needing
+      # "no Dependabot coverage" because they are major-tag-tracked rather
+      # than SHA-pinned. Here gha is an external repository, so its major tags
+      # are exactly what Dependabot will see and offer to bump -- which is why
+      # this repo needs the rule that gha does not.
+      #
+      # Minors and patches still flow; only majors are frozen. Confirm on the
+      # first real Dependabot run that this glob matches the full
+      # `owner/repo/.github/workflows/file.yml` dependency name, which is not
+      # explicitly documented.
+      - dependency-name: "Morrison-Lab/gha/*"
+        update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
