@@ -10,8 +10,22 @@ max_concurrency = 10
 # User agent string
 user_agent = "Mozilla/5.0 (compatible; Lychee/0.15; +https://github.com/lycheeverse/lychee)"
 
-# Accept these HTTP status codes as valid
-accept = [200, 201, 202, 203, 204, 206, 301, 302, 303, 307, 308, 429]
+# Accept these HTTP status codes as valid.
+#
+# The non-2xx/3xx entries are all cases where a site is fine for a human but
+# rejects an automated checker, so treating them as broken produces false
+# positives a book author cannot act on:
+#   403 - blocks automated checkers (biorxiv.org, sciencedirect.com, medium.com)
+#   405 - Method Not Allowed from servers that reject the checker's request
+#         (niaid.nih.gov). Note this is NOT the usual "rejects HEAD" case:
+#         lychee runs with its default GET here, no --method override
+#         anywhere in the chain, so HEAD is never sent.
+#   415 - rejects lychee's request media type (equator-network.org)
+#   429 - rate-limited, not broken
+#   502 - intermittent gateway errors (Springer)
+#   503 - intermittent Service Unavailable (readr.tidyverse.org)
+# Any book citing academic literature will hit these eventually.
+accept = [200, 201, 202, 203, 204, 206, 301, 302, 303, 307, 308, 403, 405, 415, 429, 502, 503]
 
 # Timeout per request (in seconds)
 timeout = 20

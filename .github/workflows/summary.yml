@@ -14,4 +14,9 @@ jobs:
       contents: read
       issues: write
       models: read
-    uses: Morrison-Lab/gha/.github/workflows/summary.yml@v1
+    # @v2 adds endpoint/model inputs and degrades gracefully when inference
+    # is unavailable, instead of hard-failing. Needed because GitHub Models,
+    # the original default endpoint, is in scheduled retirement brownout
+    # (gha#617) -- on @v1 this workflow starts failing outright once that
+    # lands.
+    uses: Morrison-Lab/gha/.github/workflows/summary.yml@v2

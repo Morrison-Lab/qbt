@@ -11,4 +11,8 @@ on:
 
 jobs:
   check:
+    # See check-bibliography-dois.yml: explicit least privilege rather than
+    # the repository default.
+    permissions:
+      contents: read
     uses: Morrison-Lab/gha/.github/workflows/check-non-standard-chars.yml@v2

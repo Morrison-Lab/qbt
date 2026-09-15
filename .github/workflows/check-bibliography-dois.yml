@@ -10,4 +10,9 @@ on:
 
 jobs:
   check:
+    # Declared explicitly so the job does not fall back to the repository's
+    # default token scope, which is broader than this check needs. Every
+    # other gha caller in this repo already does this.
+    permissions:
+      contents: read
     uses: Morrison-Lab/gha/.github/workflows/check-bibliography-dois.yml@v2

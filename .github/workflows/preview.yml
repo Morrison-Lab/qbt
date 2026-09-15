@@ -232,6 +232,30 @@ jobs:
         uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: docs
+          # Without this, `action` defaults to `auto`, which by the action's
+          # own documentation "will deploy the preview on
+          # pull_request.types.synchronize and .opened events, and remove it
+          # on .closed events. It will not do anything for all other events."
+          #
+          # That doc text omits `reopened`, but the action's own
+          # determine-auto-action.sh does handle it (opened|reopened|
+          # synchronize -> deploy), so `reopened` was never broken. The
+          # events that actually fell through to "none" are `labeled` and
+          # `unlabeled`, which this workflow triggers on deliberately so that
+          # toggling `no-preview-highlights` re-renders the preview. Under
+          # `auto` those two rendered the whole book (up to 45 minutes) and
+          # then deployed nothing, silently: the sticky-comment steps are
+          # gated on `deployment-action == 'deploy'`, so they did not fire
+          # either, and the run went green having published no change.
+          #
+          # Note the scope: this deploys on ANY label change, not only
+          # `no-preview-highlights`. Narrowing it is possible --
+          # `github.event.label.name` is populated on labeled/unlabeled
+          # events and could be tested here -- but it is not worth the added
+          # conditional: the render already ran unconditionally on every
+          # label event before this change, so the extra cost of not
+          # narrowing is the short deploy, not the render.
+          action: ${{ github.event.action == 'closed' && 'remove' || 'deploy' }}
           preview-branch: ${{ env.PREVIEW_BRANCH }}
           comment: "false"
           wait-for-pages-deployment: true
