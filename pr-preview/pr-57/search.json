@@ -154,7 +154,7 @@
     "href": "appendix-document-metadata.html",
     "title": "Document Generation Metadata",
     "section": "",
-    "text": "This document was generated from the following git commit:\n\nBranch: claude/fix-51-action-pins\nCommit: a8dbdd9\nFull commit hash: a8dbdd98e24354ce8af3809bb26b8c3c3965b173\nCommit date: 2026-09-14 18:02:23 -0700\n\nWhen transferring edits from this document back to the Quarto source files, use this commit information to set up the PR correctly and account for any commits that have been added since this document was generated.",
+    "text": "This document was generated from the following git commit:\n\nBranch: claude/fix-51-action-pins\nCommit: b28409c\nFull commit hash: b28409ccfe559fdebc80afba87ad6702e4314748\nCommit date: 2026-09-15 01:08:29 +0000\n\nWhen transferring edits from this document back to the Quarto source files, use this commit information to set up the PR correctly and account for any commits that have been added since this document was generated.",
     "crumbs": [
       "Appendices",
       "Document Generation Metadata"
