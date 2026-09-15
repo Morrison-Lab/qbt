@@ -96,17 +96,19 @@ This ensures that reviewers see working, polished output rather than discovering
 
 ### Job Time Limits
 
-Every job this repository defines must set `timeout-minutes`, and the value must
-be **no more than 50**. Without it a job inherits GitHub's 6-hour default, so a
-hung step burns runner minutes for hours before anyone notices.
+Every job this repository defines must set `timeout-minutes`.
+The value must be no more than 50.
+Without it a job inherits GitHub's 6-hour default.
+A hung step then burns runner minutes for hours before anyone notices.
 
-- **Add `timeout-minutes` to every new job**, sized to the work: 20 for lint and
-  check jobs, 45 for jobs that render or deploy the book
-- **Never exceed 50**, even for slow jobs: a job that genuinely needs longer is
-  a signal to split it, not to raise the ceiling
+- **Add `timeout-minutes` to every new job**, sized to the work
+- **Use 20 for lint and check jobs**, and 45 for jobs that render or deploy the book
+- **Never exceed 50**, even for a slow job
 
-Jobs that call a reusable workflow are the exception, and not by choice: GitHub
-rejects `timeout-minutes` on a job that uses `uses:`, so the limit has to live
-in the reusable workflow itself. The `Morrison-Lab/gha` workflows this repo
-calls already set their own, so those callers need nothing here, and do not try to
-add a limit to them, as the workflow will fail to parse.
+A job that genuinely needs longer is a signal to split it, not to raise the ceiling.
+
+Jobs that call a reusable workflow are the exception, and not by choice.
+GitHub rejects `timeout-minutes` on a job that uses `uses:`.
+The limit therefore has to live in the reusable workflow itself.
+The `Morrison-Lab/gha` workflows this repo calls already set their own.
+Those callers need nothing here, and adding a limit to them makes the workflow fail to parse.
