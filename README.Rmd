@@ -334,6 +334,17 @@ Add your custom styles to `styles.css`. These will override the default theme st
 
 This template is released under the [CC0 1.0 Universal License](LICENSE), which means you can freely use, modify, and distribute it without any restrictions.
 
+## Related templates
+
+Other Quarto book templates worth comparing against this one:
+
+- [NOAA-quarto-book](https://github.com/nmfs-opensci/NOAA-quarto-book) is a `type: book` template that also builds PDF and docx, with download links under the logo
+
+Sibling templates from this lab, for adjacent project types rather than books:
+
+- [qwt](https://github.com/Morrison-Lab/qwt) is the Quarto website template, for a site that is not structured as a book
+- [rpt](https://github.com/Morrison-Lab/rpt) is the R package template
+
 ## Support
 
 - [Quarto Documentation](https://quarto.org/docs/guide/)
