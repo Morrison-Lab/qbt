@@ -108,12 +108,19 @@ jobs:
       # Hand the rendered site to the deploy job. include-hidden-files matters:
       # the default excludes dotfiles, and a Quarto site can legitimately ship
       # them, which would otherwise be silently missing from every preview.
+      #
+      # retention-days is 7 rather than 1 because the split made "Re-run
+      # failed jobs" meaningful: re-running only `deploy` reuses THIS
+      # artifact, so a retention shorter than the window in which someone
+      # notices a failed deploy turns that button into an unexplained
+      # artifact-not-found error. A weekend is the case that matters, and one
+      # day does not cover it. Still far below GitHub's 90-day default.
       - name: Upload rendered site
         uses: actions/upload-artifact@v7
         with:
           name: pr-preview-site
           path: docs
-          retention-days: 1
+          retention-days: 7
           include-hidden-files: true
           if-no-files-found: error
 
@@ -155,9 +162,10 @@ jobs:
     # they queue instead. It cannot be combined with cancel-in-progress: true,
     # which this group does not use.
     #
-    # Availability: `queue` is GitHub-hosted (github.com / GHEC) syntax. It is
-    # absent from the GitHub Enterprise Server docs through 3.18, so if you
-    # fork this template onto GHES, DELETE the `queue: max` line rather than
+    # Availability: `queue` is GitHub-hosted (github.com / GHEC) syntax. As of
+    # 2026-09-14 it is absent from every published GitHub Enterprise Server
+    # doc version (checked through 3.22, the newest listed), so if you fork
+    # this template onto GHES, DELETE the `queue: max` line rather than
     # assuming it degrades quietly. GitHub rejects a workflow file containing
     # an unrecognized key outright ("Invalid workflow file"), which would stop
     # this workflow running at all rather than falling back to the default
