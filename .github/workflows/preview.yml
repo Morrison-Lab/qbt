@@ -155,9 +155,16 @@ jobs:
     # they queue instead. It cannot be combined with cancel-in-progress: true,
     # which this group does not use.
     #
-    # Availability: `queue` is GitHub-hosted (github.com / GHEC) syntax and is
-    # NOT available on GitHub Enterprise Server. A GHES fork of this template
-    # falls back to the default single-pending behaviour described above.
+    # Availability: `queue` is GitHub-hosted (github.com / GHEC) syntax. It is
+    # absent from the GitHub Enterprise Server docs through 3.18, so if you
+    # fork this template onto GHES, DELETE the `queue: max` line rather than
+    # assuming it degrades quietly. GitHub rejects a workflow file containing
+    # an unrecognized key outright ("Invalid workflow file"), which would stop
+    # this workflow running at all rather than falling back to the default
+    # single-pending behaviour. That failure mode is inferred from how
+    # unknown workflow keys are handled generally, not measured on a GHES
+    # instance -- which is itself the reason to remove the line rather than
+    # rely on a guess.
     #
     # actionlint does not yet know the `queue` key and reports it as an
     # unexpected key (rhysd/actionlint#657, still open in v1.7.12, the current

@@ -11,7 +11,14 @@
 #
 # The pattern is deliberately narrow: it matches only this one message, so
 # every other actionlint finding in these workflows still reports normally.
+#
+# Both extensions are listed: actionlint matches these globs literally, so
+# `*.yml` alone would miss this repo's `.yaml`-named workflows
+# (check-spelling.yaml, lint-project.yaml) and any a downstream book adds.
 paths:
   .github/workflows/*.yml:
+    ignore:
+      - 'unexpected key "queue" for "concurrency" section.*'
+  .github/workflows/*.yaml:
     ignore:
       - 'unexpected key "queue" for "concurrency" section.*'

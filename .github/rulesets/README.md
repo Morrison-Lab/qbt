@@ -28,7 +28,8 @@ Applies to the default branch:
   (PR + status checks) but not peer review. Raise this value if you want to
   require approvals before merge.
 - **Required status checks** (not strict - branch does not need to be up
-  to date): Spellcheck, check-chars, build-deploy. The `build-deploy`
+  to date): `check / link-checker`, `Spellcheck`, `check / check-chars`,
+  and `build-deploy`. The `build-deploy`
   context is produced by `preview.yml` on PRs (publish.yml only runs on
   push-to-main, so it can't satisfy this); if you rename either job, the
   ruleset gate will hang. `preview.yml` renders in a `build` job and writes
