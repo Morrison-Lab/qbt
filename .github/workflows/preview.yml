@@ -12,12 +12,29 @@ on:
       - unlabeled
 
 jobs:
-  build-deploy:
+  # Tier 1: render. Read-only, and superseded by a newer commit on the same PR
+  # -- there is no point finishing a render whose output is already stale.
+  build:
     timeout-minutes: 45
     runs-on: ubuntu-latest
+    # Keyed on the ref so each PR gets its own group: a push to PR A must not
+    # cancel PR B's render. cancel-in-progress: true because a stale render is
+    # worthless, unlike a stale deploy (see the deploy job).
+    #
+    # Caveat: this cancels whichever run is currently RUNNING, which is not
+    # necessarily the one for the older commit. If runner scheduling delays a
+    # newer commit's render past an older one's, the newer render is the one
+    # cancelled, leaving that commit red until it is re-run or pushed again.
+    # Accepted: it is scheduling-noise-rare, it cannot produce a false green
+    # (the build-deploy job below fails on a cancelled dependency), and it is
+    # the same pattern Morrison-Lab/gha and Morrison-Lab/qwt already use.
+    concurrency:
+      group: preview-${{ github.ref }}
+      cancel-in-progress: true
+    # Renders and post-processes local files only; nothing here writes to the
+    # repository. All writes happen in the deploy job below.
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
@@ -88,6 +105,116 @@ jobs:
           HTML_DIR: ./docs
           PREVIEW_CHANGED_CHAPTERS: ${{ env.PREVIEW_CHANGED_CHAPTERS }}
 
+      # Hand the rendered site to the deploy job. include-hidden-files matters:
+      # the default excludes dotfiles, and a Quarto site can legitimately ship
+      # them, which would otherwise be silently missing from every preview.
+      #
+      # retention-days is 7 rather than 1 because the split made "Re-run
+      # failed jobs" meaningful: re-running only `deploy` reuses THIS
+      # artifact, so a retention shorter than the window in which someone
+      # notices a failed deploy turns that button into an unexplained
+      # artifact-not-found error. A weekend is the case that matters, and one
+      # day does not cover it. Still far below GitHub's 90-day default.
+      - name: Upload rendered site
+        uses: actions/upload-artifact@v7
+        with:
+          name: pr-preview-site
+          path: docs
+          retention-days: 7
+          include-hidden-files: true
+          if-no-files-found: error
+
+  # Tier 2: publish to gh-pages. Short, and the only part that writes.
+  deploy:
+    needs: build
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    # Serialize every writer to gh-pages -- PR preview deploys, preview
+    # removals, main-site publishes (publish.yml) and the weekly preview
+    # cleanup (cleanup-pr-previews.yml, which already uses this group name
+    # inside the gha reusable workflow it calls). Concurrency groups are
+    # repository-scoped, so naming the group `gh-pages` everywhere puts all of
+    # them in one queue.
+    #
+    # Why this is the fix: GitHub Pages builds gh-pages one commit at a time,
+    # and a commit landing while a build is in flight supersedes it, so the
+    # older build reports `errored`. `wait-for-pages-deployment: true` below
+    # then polls that build and fails the step -- even though the git push
+    # itself succeeded.
+    #
+    # Measured 2026-09-14 over the 100 most recent Pages builds, from
+    # `gh api "repos/Morrison-Lab/qbt/pages/builds?per_page=100"`, comparing
+    # each build's `created_at` against the next one's: successful builds took
+    # 29-75s, and 26 of the 27 errored builds had another gh-pages commit land
+    # in under 38s, while no successful build did (the closest was exactly
+    # 38s). The figures will drift with deploy volume and are recorded to show
+    # how the mechanism was identified, not as a standing property -- re-run
+    # that same query rather than a different endpoint before citing them, as
+    # the Pages *deployments* API reports a different population.
+    # Serializing the writers removes the overlap that causes it.
+    #
+    # cancel-in-progress: false because a cancelled deploy is not harmless the
+    # way a cancelled render is -- it would abandon a half-written gh-pages
+    # state.
+    #
+    # queue: max is load-bearing, not a refinement. The default (queue:
+    # single) keeps only ONE pending run per group and cancels the pending
+    # one whenever a newer run queues -- and the group is shared across every
+    # PR, so the run that gets dropped need not be a superseded version of
+    # itself. With three PRs deploying, PR B's pending deploy is cancelled by
+    # PR C arriving, and nothing replaces it: B's preview simply never
+    # publishes until someone pushes to B again. That is precisely the
+    # "silently skipped preview" #62 warned a naive fix would trade the
+    # intermittent failure for. queue: max allows up to 100 pending runs, so
+    # they queue instead. It cannot be combined with cancel-in-progress: true,
+    # which this group does not use.
+    #
+    # Availability: `queue` is GitHub-hosted (github.com / GHEC) syntax. As of
+    # 2026-09-14 it is absent from every published GitHub Enterprise Server
+    # doc version (checked through 3.22, the newest listed), so if you fork
+    # this template onto GHES, DELETE the `queue: max` line rather than
+    # assuming it degrades quietly. GitHub rejects a workflow file containing
+    # an unrecognized key outright ("Invalid workflow file"), which would stop
+    # this workflow running at all rather than falling back to the default
+    # single-pending behaviour. That failure mode is inferred from how
+    # unknown workflow keys are handled generally, not measured on a GHES
+    # instance -- which is itself the reason to remove the line rather than
+    # rely on a guess.
+    #
+    # actionlint does not yet know the `queue` key and reports it as an
+    # unexpected key (rhysd/actionlint#657, still open in v1.7.12, the current
+    # release). Suppressed narrowly in .github/actionlint.yaml rather than
+    # left as standing noise -- lint-workflows.yml runs with `fail: false`
+    # here, but the reusable workflow it calls defaults to `fail: true`, so a
+    # downstream book that does not carry that override would otherwise get a
+    # hard lint failure from a false positive.
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: false
+      queue: max
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # fetch-depth: 0 preserves the checkout this job was split out of, so
+      # the split changes only WHERE the deploy runs and not what it sees.
+      # (gha's own preview-deploy job runs pr-preview-action at the default
+      # depth of 1, so depth is very likely not load-bearing here -- but
+      # this PR is about the race, and matching the prior behaviour keeps
+      # that the only variable.)
+      # Submodules are deliberately omitted: this job publishes the rendered
+      # site downloaded below and never reads the source tree.
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Download rendered site
+        uses: actions/download-artifact@v8
+        with:
+          name: pr-preview-site
+          path: docs
+
       - name: Deploy PR Preview
         id: preview-step
         if: github.event_name == 'pull_request'
@@ -119,3 +246,32 @@ jobs:
                 :---:
                 Preview removed because the pull request was closed.
                 ${{ steps.preview-step.outputs.action-start-time }}
+
+  # Preserves the `build-deploy` required status check named in
+  # .github/rulesets/main.json. Splitting the old single `build-deploy` job in
+  # two would otherwise retire that context, and the ruleset would wait on a
+  # check no job ever reports again -- hanging the merge gate on every PR.
+  # See .github/rulesets/README.md, which warns about exactly this.
+  #
+  # A skipped or cancelled dependency is deliberately NOT treated as a pass:
+  # GitHub counts a *skipped required check* as satisfied, so reporting this
+  # job's own success unconditionally would let a PR whose render failed
+  # merge behind a green gate.
+  build-deploy:
+    needs: [build, deploy]
+    if: always()
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Report preview pipeline result
+        env:
+          BUILD_RESULT: ${{ needs.build.result }}
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+        run: |
+          set -euo pipefail
+          echo "build=$BUILD_RESULT deploy=$DEPLOY_RESULT"
+          failed=0
+          [ "$BUILD_RESULT" = "success" ] || { echo "::error::preview build did not succeed ($BUILD_RESULT)"; failed=1; }
+          [ "$DEPLOY_RESULT" = "success" ] || { echo "::error::preview deploy did not succeed ($DEPLOY_RESULT)"; failed=1; }
+          exit "$failed"

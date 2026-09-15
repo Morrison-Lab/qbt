@@ -9,6 +9,32 @@ jobs:
   build-deploy:
     timeout-minutes: 45
     runs-on: ubuntu-latest
+    # Serialize gh-pages writes against the PR-preview deploys and the weekly
+    # preview cleanup, which target the same branch. Without a shared group,
+    # a publish and a preview deploy push concurrently and one of them loses
+    # the race (see issue #62). cancel-in-progress: false queues rather than
+    # kills, so no publish of main is silently dropped.
+    #
+    # queue: max is required for that guarantee, not optional. Under the
+    # default queue: single, a pending publish is cancelled as soon as any
+    # newer run joins the group -- including a PR preview deploy, which is
+    # unrelated to main. Since this job had no concurrency group at all
+    # before, omitting queue: max would REGRESS it: a publish of main could
+    # be dropped outright rather than merely delayed. See the matching
+    # comment in preview.yml for the GHES-availability and actionlint caveats.
+    #
+    # Known tradeoff: this group sits on the whole job, so a main-branch
+    # render holds the gh-pages queue for its full duration and delays every
+    # PR preview deploy behind it. preview.yml avoids that by splitting
+    # render from deploy; doing the same here is the obvious follow-up and is
+    # deliberately NOT bundled into this PR, because publish.yml only ever
+    # runs on push to main and so cannot be exercised on the PR that changes
+    # it -- getting it wrong stops the book publishing. Sequenced as its own
+    # change once the preview split has run in production. Tracked in #68.
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: false
+      queue: max
     permissions:
       contents: write
     steps:
