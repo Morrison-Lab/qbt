@@ -20,6 +20,14 @@ jobs:
     # Keyed on the ref so each PR gets its own group: a push to PR A must not
     # cancel PR B's render. cancel-in-progress: true because a stale render is
     # worthless, unlike a stale deploy (see the deploy job).
+    #
+    # Caveat: this cancels whichever run is currently RUNNING, which is not
+    # necessarily the one for the older commit. If runner scheduling delays a
+    # newer commit's render past an older one's, the newer render is the one
+    # cancelled, leaving that commit red until it is re-run or pushed again.
+    # Accepted: it is scheduling-noise-rare, it cannot produce a false green
+    # (the build-deploy job below fails on a cancelled dependency), and it is
+    # the same pattern Morrison-Lab/gha and Morrison-Lab/qwt already use.
     concurrency:
       group: preview-${{ github.ref }}
       cancel-in-progress: true
@@ -127,17 +135,35 @@ jobs:
     # then polls that build and fails the step -- even though the git push
     # itself succeeded. Measured over the 100 most recent Pages builds on this
     # repo: successful builds take 29-75s, and 26 of the 27 errored builds had
-    # another gh-pages commit land within 38s, while zero successful builds
-    # did. Serializing the writers removes the overlap that causes it.
+    # another gh-pages commit land in under 38s, while no successful build
+    # did (the closest was exactly 38s). Serializing the writers removes the
+    # overlap that causes it.
     #
     # cancel-in-progress: false because a cancelled deploy is not harmless the
     # way a cancelled render is -- it would abandon a half-written gh-pages
-    # state. Note GitHub keeps only ONE pending run per group and supersedes
-    # older pending ones; that is safe here because a superseded deploy is
-    # always followed by a newer deploy of the same PR.
+    # state.
+    #
+    # queue: max is load-bearing, not a refinement. The default (queue:
+    # single) keeps only ONE pending run per group and cancels the pending
+    # one whenever a newer run queues -- and the group is shared across every
+    # PR, so the run that gets dropped need not be a superseded version of
+    # itself. With three PRs deploying, PR B's pending deploy is cancelled by
+    # PR C arriving, and nothing replaces it: B's preview simply never
+    # publishes until someone pushes to B again. That is precisely the
+    # "silently skipped preview" #62 warned a naive fix would trade the
+    # intermittent failure for. queue: max allows up to 100 pending runs, so
+    # they queue instead. It cannot be combined with cancel-in-progress: true,
+    # which this group does not use.
+    #
+    # actionlint 1.7.12 (the current release) does not yet know the `queue`
+    # key and reports `unexpected key "queue"`. The key is documented GitHub
+    # workflow syntax; lint-workflows.yml runs with `fail: false`, so this
+    # surfaces as a warning rather than a failure. It is a linter gap, not a
+    # workflow error.
     concurrency:
       group: gh-pages
       cancel-in-progress: false
+      queue: max
     permissions:
       contents: write
       pull-requests: write

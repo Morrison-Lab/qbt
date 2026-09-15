@@ -13,13 +13,19 @@ jobs:
     # preview cleanup, which target the same branch. Without a shared group,
     # a publish and a preview deploy push concurrently and one of them loses
     # the race (see issue #62). cancel-in-progress: false queues rather than
-    # kills, so no publish of main is silently dropped. Note that GitHub
-    # retains only ONE pending run per group, superseding older pending runs;
-    # that is acceptable here because a superseded publish is always followed
-    # by a newer one rendering the same branch.
+    # kills, so no publish of main is silently dropped.
+    #
+    # queue: max is required for that guarantee, not optional. Under the
+    # default queue: single, a pending publish is cancelled as soon as any
+    # newer run joins the group -- including a PR preview deploy, which is
+    # unrelated to main. Since this job had no concurrency group at all
+    # before, omitting queue: max would REGRESS it: a publish of main could
+    # be dropped outright rather than merely delayed. See the matching
+    # comment in preview.yml for the actionlint caveat.
     concurrency:
       group: gh-pages
       cancel-in-progress: false
+      queue: max
     permissions:
       contents: write
     steps:
