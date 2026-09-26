@@ -10,7 +10,9 @@ book:
   author: "Your Name"
   date: last-modified
   date-format: "[Last updated:] YYYY-MM-DD"
-  repo-url: https://github.com/UCD-SERG/qbt
+  # Replace with your own repository when using this template: repo-url
+  # feeds repo-actions below, so every rendered page links here.
+  repo-url: https://github.com/Morrison-Lab/qbt
   repo-actions: [edit, source, issue]
   downloads: [pdf, epub, docx]
   chapters:
