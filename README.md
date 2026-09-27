@@ -330,6 +330,35 @@ book:
 Add your custom styles to `styles.css`.
 These will override the default theme styles.
 
+### Speeding up renders for a large book
+
+This template deliberately ships no render cache.
+Its own sample book renders in about four minutes, so there is nothing here to gain, and the caching options carry a correctness hazard better judged against a real book's structure than enabled by default.
+
+Once your book is slow enough for the render time to be annoying, Quarto's `freeze` feature is the lever.
+It caches each page's computed output and re-runs only the pages whose source changed:
+
+``` yaml
+execute:
+  freeze: auto
+```
+
+Before enabling it, know what `freeze` does not track.
+It hashes a page's own source file, and nothing that page pulls in.
+Two consequences matter for a book built from this template:
+
+- A page that pulls in another file with `{{< include >}}` is not re-rendered when only the included file changes, so the published page silently keeps its old content.
+- Every page's math depends on the `macros/` submodule, and a macro definition change invalidates no page's hash at all, so editing a macro can leave the whole book rendered against the previous definitions.
+
+So `freeze: auto` on its own trades render time for output that can be quietly wrong.
+Enabling it safely means invalidating the affected pages yourself whenever a shared dependency changes.
+`Morrison-Lab/qwt` does this with a script that clears the freeze entries for pages whose includes changed, and caches the `_freeze` directory between CI runs.
+That is the shape to copy, rather than the bare option above.
+
+One more thing to check first.
+This template runs `pre-render.py` before every render, which regenerates `macros-pdf.tex` from `macros/macros.qmd`.
+How a `pre-render` hook interacts with a freeze cache is not obvious, so confirm that a macro change still reaches the PDF output before relying on the cache.
+
 ## License
 
 This template is released under the [CC0 1.0 Universal License](LICENSE), which means you can freely use, modify, and distribute it without any restrictions.
