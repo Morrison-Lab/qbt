@@ -187,6 +187,16 @@ Checks R code style and quality using the lintr package.
 
 **Note:** Only runs if your project contains R code.
 
+### 🔎 Lint Changed Files Workflow (`lint-changed-files.yaml`)
+
+Lints only the R files a pull request changed, so a PR is flagged for lint it introduces rather than for lint that was already in the repo.
+
+**Triggers:** Pull requests
+
+**Note:** Complements `lint-project.yaml` rather than replacing it.
+Whole-repo lint is what catches a file nobody has touched since a linter was added, so keep both.
+Like `lint-project.yaml`, this only reports anything if your project contains R code, including R chunks inside `.qmd` chapters.
+
 ### 🤖 Copilot Setup Steps (`copilot-setup-steps.yml`)
 
 Configures the GitHub Copilot coding agent's environment with Quarto and TinyTeX.
