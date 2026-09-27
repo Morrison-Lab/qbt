@@ -18,3 +18,8 @@ jobs:
     with:
       # README.md is generated from README.Rmd; fix line breaks at the source.
       paths-ignore: 'README.md'
+      # ...and check that source, which the default globs ('*.md') did not.
+      # With README.md ignored and README.Rmd unmatched, neither file was
+      # covered, so the instruction above was advisory and nothing enforced it.
+      # Adding *.Rmd examines README.Rmd instead, which is the file to fix.
+      globs: '*.md *.Rmd'

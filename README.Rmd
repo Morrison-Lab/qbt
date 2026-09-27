@@ -1,7 +1,18 @@
 ---
 output:
   github_document:
+    # --wrap=preserve keeps this file's line breaks in the generated README.md.
+    # Without it pandoc reflows every paragraph to its own column width, so a
+    # one-sentence edit here lands as a whole reflowed paragraph in the diff,
+    # and the semantic line breaks written in this file are not the ones that
+    # ship.
+    #
+    # It also makes check-new-line-breaks.yml's instruction ("fix line breaks
+    # at the source") enforceable rather than advisory: that workflow ignores
+    # README.md, and its globs now include *.Rmd, so this file is what the
+    # check reads.
     md_extensions: "-smart"
+    pandoc_args: ["--wrap=preserve"]
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -51,7 +62,8 @@ cd YOUR-REPO
 
 ### Prerequisites
 
-You need to have [Quarto](https://quarto.org/) installed. Download it from [quarto.org/docs/get-started](https://quarto.org/docs/get-started/).
+You need to have [Quarto](https://quarto.org/) installed.
+Download it from [quarto.org/docs/get-started](https://quarto.org/docs/get-started/).
 
 To verify Quarto is installed:
 
@@ -115,10 +127,13 @@ This template includes a GitHub Actions workflow (`.github/workflows/publish.yml
    ```
    This protects `main` against direct pushes / force-pushes / deletion,
    requires a PR to merge, and gates the merge on the configured CI checks
-   (Spellcheck, check-chars, build-deploy). A PR is required but **zero
-   approvals** are needed, so authors can self-merge; raise
-   `required_approving_review_count` in `.github/rulesets/main.json` to require approvals. See
-   `.github/rulesets/README.md` for details.
+   (`check / link-checker`, `Spellcheck`, `check / check-chars` and
+   `build-deploy`).
+   A PR is required but **zero approvals** are needed, so authors can
+   self-merge.
+   Raise `required_approving_review_count` in `.github/rulesets/main.json` to
+   require approvals.
+   See `.github/rulesets/README.md` for details.
 
 3. **Push to main branch**:
    ```bash
@@ -242,7 +257,8 @@ Automatically checks that all URLs in your book are reachable:
 
 - **Runs on**: Push to main, pull requests, weekly schedule (Mondays at 9:00 UTC), and manual trigger
 - **Checks**: All links in `.qmd`, `.md`, and `.html` files
-- **Reports**: Workflow fails if broken links are detected. Check the workflow logs for details on which links are broken.
+- **Reports**: Workflow fails if broken links are detected.
+  Check the workflow logs for details on which links are broken.
 - **Configuration**: Customize behavior in `lychee.toml`
 - **Manual override**: Add the `links checked by hand` label to a PR to skip the automated link check
 
@@ -328,7 +344,8 @@ book:
 
 ### Custom CSS
 
-Add your custom styles to `styles.css`. These will override the default theme styles.
+Add your custom styles to `styles.css`.
+These will override the default theme styles.
 
 ## License
 

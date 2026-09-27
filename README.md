@@ -4,12 +4,10 @@
 # qbt (<u>Q</u>uarto <u>B</u>ook <u>T</u>emplate)
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
-A template repository for creating books with
-[Quarto](https://quarto.org/). This template provides everything you
-need to quickly start writing your own book.
+A template repository for creating books with [Quarto](https://quarto.org/).
+This template provides everything you need to quickly start writing your own book.
 
 ## Features
 
@@ -41,9 +39,8 @@ cd YOUR-REPO
 
 ### Prerequisites
 
-You need to have [Quarto](https://quarto.org/) installed. Download it
-from
-[quarto.org/docs/get-started](https://quarto.org/docs/get-started/).
+You need to have [Quarto](https://quarto.org/) installed.
+Download it from [quarto.org/docs/get-started](https://quarto.org/docs/get-started/).
 
 To verify Quarto is installed:
 
@@ -65,8 +62,7 @@ quarto --version
 3.  **Edit or create chapters** (`.qmd` files):
 
     - Modify `chapter1.qmd` and `chapter2.qmd` as needed
-    - Create new chapters and add them to the `chapters` list in
-      `_quarto.yml`
+    - Create new chapters and add them to the `chapters` list in `_quarto.yml`
 
 4.  **Add references** to `references.bib` in BibTeX format
 
@@ -82,8 +78,7 @@ To preview your book with live reload during development:
 quarto preview
 ```
 
-This will open your book in a web browser and automatically refresh when
-you make changes.
+This will open your book in a web browser and automatically refresh when you make changes.
 
 ### Render the book
 
@@ -97,9 +92,7 @@ The output will be generated in the `docs/` directory.
 
 ## Publishing to GitHub Pages
 
-This template includes a GitHub Actions workflow
-(`.github/workflows/publish.yml`) that automatically builds and
-publishes your book to GitHub Pages when you push to the main branch.
+This template includes a GitHub Actions workflow (`.github/workflows/publish.yml`) that automatically builds and publishes your book to GitHub Pages when you push to the main branch.
 
 ### Setup steps:
 
@@ -114,13 +107,15 @@ publishes your book to GitHub Pages when you push to the main branch.
     .github/scripts/apply-rulesets.sh
     ```
 
-    This protects `main` against direct pushes / force-pushes /
-    deletion, requires a PR to merge, and gates the merge on the
-    configured CI checks (Spellcheck, check-chars, build-deploy). A PR
-    is required but **zero approvals** are needed, so authors can
-    self-merge; raise `required_approving_review_count` in
-    `.github/rulesets/main.json` to require approvals. See
-    `.github/rulesets/README.md` for details.
+    This protects `main` against direct pushes / force-pushes / deletion,
+    requires a PR to merge, and gates the merge on the configured CI checks
+    (`check / link-checker`, `Spellcheck`, `check / check-chars` and
+    `build-deploy`).
+    A PR is required but **zero approvals** are needed, so authors can
+    self-merge.
+    Raise `required_approving_review_count` in `.github/rulesets/main.json` to
+    require approvals.
+    See `.github/rulesets/README.md` for details.
 
 3.  **Push to main branch**:
 
@@ -132,18 +127,15 @@ publishes your book to GitHub Pages when you push to the main branch.
 
 4.  **Wait for the workflow** to complete (check the Actions tab)
 
-5.  **Access your book** at:
-    `https://YOUR-USERNAME.github.io/YOUR-REPO/`
+5.  **Access your book** at: `https://YOUR-USERNAME.github.io/YOUR-REPO/`
 
 ## GitHub Actions Workflows
 
-This template includes several automated workflows to enhance your
-development experience:
+This template includes several automated workflows to enhance your development experience:
 
 ### 🚀 Publish Workflow (`publish.yml`)
 
-Automatically builds and deploys your book to GitHub Pages when you push
-to the main branch.
+Automatically builds and deploys your book to GitHub Pages when you push to the main branch.
 
 **Triggers:** Push to main branch, manual dispatch
 
@@ -156,18 +148,15 @@ Creates a preview deployment for pull requests with:
 - Visual indicators for modified chapters
 - Banner showing what changed in the PR
 
-**Triggers:** PR opened, reopened, synchronized, closed, labeled, or
-unlabeled
+**Triggers:** PR opened, reopened, synchronized, closed, labeled, or unlabeled
 
 **Labels:**
 
-- Add `no-preview-highlights` label to disable change highlighting if
-  it's glitchy
+- Add `no-preview-highlights` label to disable change highlighting if it's glitchy
 
 ### ✅ Spell Check Workflow (`check-spelling.yaml`)
 
-Runs automated spell checking on pushes and pull requests to maintain
-content quality.
+Runs automated spell checking on pushes and pull requests to maintain content quality.
 
 **Triggers:** Push to main, pull requests
 
@@ -181,8 +170,7 @@ Checks R code style and quality using the lintr package.
 
 ### 🤖 Copilot Setup Steps (`copilot-setup-steps.yml`)
 
-Configures the GitHub Copilot coding agent's environment with Quarto and
-TinyTeX.
+Configures the GitHub Copilot coding agent's environment with Quarto and TinyTeX.
 
 **Triggers:** Workflow dispatch, changes to the setup file
 
@@ -196,8 +184,7 @@ Automatically generates AI-powered summaries for newly opened issues.
 
 ### 📚 Check Bibliography DOIs Workflow (`check-bibliography-dois.yml`)
 
-Validates that all books and articles in bibliography files meet DOI
-requirements:
+Validates that all books and articles in bibliography files meet DOI requirements:
 
 - Every book and article must have a DOI field
 - Every DOI must resolve to a valid URL
@@ -205,8 +192,7 @@ requirements:
 
 **Triggers:** Push to main, pull requests, manual dispatch
 
-**Note:** This helps maintain high-quality bibliographic references and
-ensures all citations are properly traceable.
+**Note:** This helps maintain high-quality bibliographic references and ensures all citations are properly traceable.
 
 ## Project Structure
 
@@ -246,21 +232,18 @@ This template includes two GitHub Actions workflows:
 
 ### Publishing Workflow (`publish.yml`)
 
-Automatically builds and deploys your book to GitHub Pages when you push
-to the main branch.
+Automatically builds and deploys your book to GitHub Pages when you push to the main branch.
 
 ### Link Checker Workflow (`check-links.yml`)
 
 Automatically checks that all URLs in your book are reachable:
 
-- **Runs on**: Push to main, pull requests, weekly schedule (Mondays at
-  9:00 UTC), and manual trigger
+- **Runs on**: Push to main, pull requests, weekly schedule (Mondays at 9:00 UTC), and manual trigger
 - **Checks**: All links in `.qmd`, `.md`, and `.html` files
-- **Reports**: Workflow fails if broken links are detected. Check the
-  workflow logs for details on which links are broken.
+- **Reports**: Workflow fails if broken links are detected.
+  Check the workflow logs for details on which links are broken.
 - **Configuration**: Customize behavior in `lychee.toml`
-- **Manual override**: Add the `links checked by hand` label to a PR to
-  skip the automated link check
+- **Manual override**: Add the `links checked by hand` label to a PR to skip the automated link check
 
 To manually trigger the link checker:
 
@@ -311,8 +294,7 @@ Reference figures, tables, and sections using labels:
 See @fig-example for details.
 ```
 
-For more details, see the [Quarto
-documentation](https://quarto.org/docs/guide/).
+For more details, see the [Quarto documentation](https://quarto.org/docs/guide/).
 
 ## Customization
 
@@ -345,38 +327,30 @@ book:
 
 ### Custom CSS
 
-Add your custom styles to `styles.css`. These will override the default
-theme styles.
+Add your custom styles to `styles.css`.
+These will override the default theme styles.
 
 ## License
 
-This template is released under the [CC0 1.0 Universal
-License](LICENSE), which means you can freely use, modify, and
-distribute it without any restrictions.
+This template is released under the [CC0 1.0 Universal License](LICENSE), which means you can freely use, modify, and distribute it without any restrictions.
 
 ## Related templates
 
 Other Quarto book templates worth comparing against this one:
 
-- [NOAA-quarto-book](https://github.com/nmfs-opensci/NOAA-quarto-book)
-  is a `type: book` template that also builds PDF and docx, with
-  download links under the logo
+- [NOAA-quarto-book](https://github.com/nmfs-opensci/NOAA-quarto-book) is a `type: book` template that also builds PDF and docx, with download links under the logo
 
-Sibling templates from this lab, for adjacent project types rather than
-books:
+Sibling templates from this lab, for adjacent project types rather than books:
 
-- [qwt](https://github.com/Morrison-Lab/qwt) is the Quarto website
-  template, for a site that is not structured as a book
+- [qwt](https://github.com/Morrison-Lab/qwt) is the Quarto website template, for a site that is not structured as a book
 - [rpt](https://github.com/Morrison-Lab/rpt) is the R package template
 
 ## Support
 
 - [Quarto Documentation](https://quarto.org/docs/guide/)
-- [Quarto
-  Community](https://github.com/quarto-dev/quarto-cli/discussions)
+- [Quarto Community](https://github.com/quarto-dev/quarto-cli/discussions)
 - [GitHub Pages Documentation](https://docs.github.com/en/pages)
 
 ## Contributing
 
-Feel free to open issues or submit pull requests to improve this
-template!
+Feel free to open issues or submit pull requests to improve this template!
