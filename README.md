@@ -367,7 +367,7 @@ That is the shape to copy, rather than the bare option above.
 
 One more thing to check first.
 This template runs `pre-render.py` before every render, which regenerates `macros-pdf.tex` from `macros/macros.qmd`.
-How a pre-render hook interacts with a freeze cache is not obvious, so confirm that a macro change still reaches the PDF output before relying on the cache.
+How a `pre-render` hook interacts with a freeze cache is not obvious, so confirm that a macro change still reaches the PDF output before relying on the cache.
 
 ## License
 
