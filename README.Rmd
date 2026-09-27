@@ -2,10 +2,15 @@
 output:
   github_document:
     # --wrap=preserve keeps this file's line breaks in the generated README.md.
-    # Without it pandoc reflows every paragraph to its own column width, which
-    # silently defeats the repo's semantic-line-break check: that check only
-    # looks at lines as they appear in README.md, so reflowed prose passed it
-    # regardless of how this file was written (qbt#74).
+    # Without it pandoc reflows every paragraph to its own column width, so a
+    # one-sentence edit here lands as a whole reflowed paragraph in the diff,
+    # and the semantic line breaks written in this file are not the ones that
+    # ship.
+    #
+    # It also makes check-new-line-breaks.yml's instruction ("fix line breaks
+    # at the source") enforceable rather than advisory: that workflow ignores
+    # README.md, and its globs now include *.Rmd, so this file is what the
+    # check reads.
     md_extensions: "-smart"
     pandoc_args: ["--wrap=preserve"]
 ---
