@@ -1,0 +1,67 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+#
+# Lints ONLY the files changed in a PR (diffed against the base via the GitHub
+# API), so a PR is flagged for lint it introduces and not for lint that was
+# already there. Complements lint-project.yaml, which lints the whole project
+# on push and PR, rather than replacing it: keep both, because whole-repo lint
+# is what catches a file nobody has touched since a linter was added.
+#
+# Ported from Morrison-Lab/qwt (qbt#74). Matches the lab practice documented in
+# UCD-SERG/lab-manual's chapter on linting changed files in CI.
+#
+# Scope note for this template: qbt itself ships no R code (`.lintr.R` is the
+# linter's own config, and none of the sample chapters carry R chunks), so this
+# workflow finds nothing here today. It is shipped for books built from the
+# template, which do: lintr's lint_dir() default pattern is
+# "(?i)[.](r|rmd|qmd|rnw|rhtml|rrst|rtex|rtxt)$", so it reads R chunks out of
+# .qmd chapters and out of README.Rmd.
+on:
+  pull_request:
+
+name: lint-changed-files.yaml
+
+permissions: read-all
+
+# Cancel a superseded run when a newer commit is pushed to the same PR.
+concurrency:
+  group: lint-changed-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  lint-changed-files:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install lintr and dependencies
+        run: install.packages(c("lintr", "gh", "purrr", "withr"), repos = "https://packagemanager.posit.co/cran/__linux__/noble/latest")
+        shell: Rscript {0}
+
+      # No need to set options(lintr.linter_file): lintr auto-detects `.lintr.R`
+      # (find_config() resolves it with no option set), same as
+      # lint-project.yaml's bare lint_dir().
+      - name: Lint files changed by this PR
+        run: |
+          files <- gh::gh(
+            "GET /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files",
+            .limit = Inf
+          )
+          changed_files <- purrr::map_chr(files, "filename")
+          # all.files = TRUE so changed dotfiles (e.g. .lintr.R) appear here and
+          # get excluded too, rather than being linted on every PR.
+          all_files <- list.files(recursive = TRUE, all.files = TRUE)
+          # lint_dir() lints everything except the exclusions, so exclude every
+          # file that this PR did NOT change.
+          exclusions_list <- as.list(setdiff(all_files, changed_files))
+          lintr::lint_dir(exclusions = exclusions_list)
+        shell: Rscript {0}
+        env:
+          LINTR_ERROR_ON_LINT: true
