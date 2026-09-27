@@ -175,7 +175,7 @@ Lints only the R files a pull request changed, so a PR is flagged for lint it in
 **Triggers:** Pull requests
 
 **Note:** Complements `lint-project.yaml` rather than replacing it.
-Whole-repo lint is what catches a file nobody has touched since a linter was added, so keep both.
+Whole-repo lint is what catches a file nobody has touched since `lintr` was added, so keep both.
 Like `lint-project.yaml`, this only reports anything if your project contains R code, including R chunks inside `.qmd` chapters.
 
 ### 🤖 Copilot Setup Steps (`copilot-setup-steps.yml`)
