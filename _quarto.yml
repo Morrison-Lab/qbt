@@ -26,6 +26,9 @@ book:
 
 bibliography: references.bib
 
+filters:
+  - d-morrison/code-language-labels
+
 format:
   html:
     theme:
