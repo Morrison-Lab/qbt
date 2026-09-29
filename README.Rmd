@@ -44,6 +44,7 @@ This template provides everything you need to quickly start writing your own boo
 - 📑 **Bibliography support** with BibTeX integration
 - 🔢 **Automatic numbering** of sections and cross-references
 - 💅 **Custom CSS** for styling your book
+- 🔖 **Code language labels** on every code block in HTML output (via the `d-morrison/code-language-labels` extension)
 - 🔍 **PR Preview** with change highlighting for pull requests
 - ✅ **Automated checks** including spell checking and linting
 - 🤖 **GitHub Copilot integration** with custom setup steps
