@@ -42,11 +42,16 @@ Applies to the default branch:
   The `build-deploy` context is produced by `preview.yml` on PRs
   (publish.yml only runs on push-to-main, so it can't satisfy this).
   If you rename either job, the ruleset gate will hang.
-  `preview.yml` renders in a `build` job and writes to `gh-pages` in a
-  separate `deploy` job, so `build-deploy` is now a small aggregator job
-  that reports both of their results under the name the ruleset requires.
-  It fails when either dependency is anything other than `success`,
-  because GitHub counts a *skipped* required check as satisfied.
+  `preview.yml` renders in a `build` job (a call to gha's shared preview
+  workflow), and `preview-deploy.yml`, a separate workflow, writes to
+  `gh-pages`.
+  `build-deploy` is a small aggregator job in `preview.yml` that reports
+  the build under the name the ruleset requires.
+  It fails when the build fails or is cancelled, and when the build is
+  skipped on anything but a label event, because GitHub counts a *skipped*
+  required check as satisfied.
+  A failed deploy no longer fails this check, since it runs after the
+  `preview.yml` workflow finishes.
 
 - **`check / link-checker` is required, deliberately.**
   An earlier version of this file recorded it as deliberately *excluded*,

@@ -1,143 +1,36 @@
+# Renders the book (every format _quarto.yml declares, so the PDF, EPUB and
+# Word downloads exist) and deploys it to the gh-pages branch, which GitHub
+# Pages serves, keeping the pr-preview/ subtree.
+#
+# Do NOT name a `concurrency:` group `gh-pages` in this caller (deadlock,
+# https://github.com/Morrison-Lab/gha/issues/809).
+name: Quarto Publish
+
 on:
   workflow_dispatch:
   push:
     branches: main
 
-name: Quarto Publish
+# Serialize this workflow's own runs; `cancel-in-progress: false` so a
+# half-written deploy finishes rather than being killed part-way.
+concurrency:
+  group: quarto-publish-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  # Tier 1: render. Holds no gh-pages group, so a main-branch render no longer
-  # blocks every PR preview deploy behind it (#68).
-  build:
-    timeout-minutes: 45
-    runs-on: ubuntu-latest
-    # Deliberately NO concurrency group here, not even a per-ref one with
-    # cancel-in-progress. preview.yml can cancel a superseded render because a
-    # cancelled preview is only a red check, but this workflow publishes the
-    # live site. cancel-in-progress cancels whichever run is currently RUNNING,
-    # which is not necessarily the one for the older commit: if runner
-    # scheduling starts a newer commit's render first, the newer render is the
-    # one cancelled, and main would then publish the OLDER book. Two concurrent
-    # renders cost runner minutes; publishing stale content to the live site is
-    # not a cost worth trading them for.
-    #
-    # Renders local files only; nothing here writes to the repository. All
-    # writes happen in the deploy job below.
-    permissions:
-      contents: read
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
-        with:
-          submodules: true
-
-      - name: Set up R
-        uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: 'release'
-          use-public-rspm: true
-
-      - name: Install R packages
-        run: |
-          install.packages(c("knitr", "rmarkdown", "tibble"), repos = "https://packagemanager.posit.co/cran/__linux__/noble/latest")
-        shell: Rscript {0}
-
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # GH_TOKEN is the one that actually does the work here, and it is
-          # not a duplicate of the line above. `tinytex: true` runs
-          # `quarto install tool tinytex`, which resolves the latest
-          # rstudio/tinytex-releases release through the GitHub API. Quarto
-          # reads ONLY GH_TOKEN for that call (src/tools/github.ts:
-          # `Deno.env.get("GH_TOKEN") ? {headers: {Authorization: ...}} :
-          # undefined`), so with GITHUB_TOKEN alone the request goes out
-          # unauthenticated and shares the runner IP's 60-per-hour limit --
-          # producing an intermittent `403 - Forbidden` that passes on
-          # re-run and looks like a flake (#66).
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tinytex: true
-
-      - name: Render
-        uses: quarto-dev/quarto-actions/render@v2
-
-      # Hand the rendered site to the deploy job. include-hidden-files matters
-      # because the default excludes dotfiles, and the combined job this
-      # replaces pushed the render directly, dotfiles and all: without the flag
-      # the split could silently publish a different site than before.
-      #
-      # This is defensive rather than a fix for a present bug. Checked
-      # 2026-09-26: the gh-pages tree has no dotfiles at its root, so nothing
-      # the book currently emits would be lost. It is set because the cost of
-      # being wrong is asymmetric -- a missing `.nojekyll` or similar would
-      # break the live site quietly -- and because a downstream book built from
-      # this template may emit dotfiles this one does not. preview.yml sets it
-      # for the same reason.
-      #
-      # retention-days is 7 rather than 1 because the split makes "Re-run
-      # failed jobs" meaningful: re-running only `deploy` reuses THIS artifact,
-      # so a retention shorter than the window in which someone notices a
-      # failed publish turns that button into an artifact-not-found error.
-      # Matches preview.yml.
-      - name: Upload rendered site
-        uses: actions/upload-artifact@v7
-        with:
-          name: main-site
-          path: docs
-          retention-days: 7
-          include-hidden-files: true
-          if-no-files-found: error
-
-  # Tier 2: publish to gh-pages. Short, and the only part that writes.
-  deploy:
-    needs: build
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    # Serialize gh-pages writes against the PR-preview deploys and the weekly
-    # preview cleanup, which target the same branch. Without a shared group,
-    # a publish and a preview deploy push concurrently and one of them loses
-    # the race (see issue #62). cancel-in-progress: false queues rather than
-    # kills, so no publish of main is silently dropped.
-    #
-    # queue: max is required for that guarantee, not optional. Under the
-    # default queue: single, a pending publish is cancelled as soon as any
-    # newer run joins the group -- including a PR preview deploy, which is
-    # unrelated to main. Since this job had no concurrency group at all
-    # before, omitting queue: max would REGRESS it: a publish of main could
-    # be dropped outright rather than merely delayed. See the matching
-    # comment in preview.yml for the GHES-availability and actionlint caveats.
-    #
-    # The group now sits on this short job rather than on the whole render,
-    # which is what #68 asked for: a push to main used to hold the shared
-    # gh-pages queue for its entire render (up to the 45-minute timeout) and
-    # every open PR's preview deploy queued behind it. That latency was the one
-    # regression #65 knowingly accepted, and it is what this split removes.
-    concurrency:
-      group: gh-pages
-      cancel-in-progress: false
-      queue: max
+  publish:
     permissions:
       contents: write
-    steps:
-      # The deploy action pushes to gh-pages, so it needs a git checkout to
-      # work from. Submodules are deliberately omitted: this job publishes the
-      # rendered site downloaded below and never reads the source tree. Depth
-      # is left at the default, matching what the combined job used, so the
-      # split changes only WHERE the deploy runs and not what it sees.
-      - name: Check out repository
-        uses: actions/checkout@v7
-
-      - name: Download rendered site
-        uses: actions/download-artifact@v8
-        with:
-          name: main-site
-          path: docs
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: docs/
-          clean-exclude: pr-preview/
-          force: false
+    uses: Morrison-Lab/gha/.github/workflows/quarto-publish.yml@v3
+    with:
+      setup-r: true
+      r-packages: |
+        any::knitr
+        any::rmarkdown
+        any::tibble
+        any::ggplot2
+      # PDF is part of the book's downloads, so TinyTeX is needed.
+      tinytex: true
+      output-dir: docs
+      # Empty `formats` is a single bare `quarto render` here, as before.
+      checkout-submodules: true

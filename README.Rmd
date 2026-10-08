@@ -167,12 +167,17 @@ Creates a preview deployment for pull requests with:
 - DOCX files with tracked changes
 - Visual indicators for modified chapters
 - Banner showing what changed in the PR
+- Every format `_quarto.yml` declares (HTML, PDF, EPUB and Word) is built in every preview
 
 **Triggers:** PR opened, reopened, synchronized, closed, labeled, or unlabeled
 
 **Labels:**
 
 - Add `no-preview-highlights` label to disable change highlighting if it's glitchy
+
+The workflow is built from the shared workflows in [`Morrison-Lab/gha`](https://github.com/Morrison-Lab/gha): `preview.yml` builds the preview, and `preview-deploy.yml` publishes it.
+The book has no Quarto freeze cache, so the `clear freezer` label has no effect here.
+Set `execute: freeze: auto` in `_quarto.yml` and `freeze-cache: true` in `publish.yml` to use one.
 
 ### ✅ Spell Check Workflow (`check-spelling.yaml`)
 
@@ -241,15 +246,11 @@ Validates that all books and articles in bibliography files meet DOI requirement
 ├── README.md               # This file
 └── .github/
     ├── scripts/             # Scripts for workflows
-    │   ├── add-home-banner.py
-    │   ├── check-bibliography-dois.R
-    │   ├── create-docx-tracked-changes.py
-    │   ├── detect-changed-chapters.py
-    │   ├── highlight-html-changes.py
-    │   └── inject-preview-metadata.py
+    │   ├── add-docx-link.py
+    │   └── check-bibliography-dois.R
     └── workflows/           # GitHub Actions workflows
         ├── publish.yml      # Build and deploy to GitHub Pages
-        ├── preview.yml      # PR preview with change highlighting
+        ├── preview.yml      # Build the PR preview with change highlighting
         ├── check-spelling.yaml  # Spell checking
         ├── lint-project.yaml    # R code linting
         ├── copilot-setup-steps.yml  # GitHub Copilot setup
