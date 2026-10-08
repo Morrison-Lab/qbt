@@ -41,3 +41,5 @@ ggplot(mtcars, aes(x = wt, y = mpg)) +
 ## Section 1.3
 
 Include citations using `@citationkey` format, which references entries in your `references.bib` file.
+
+This sentence tests the PR preview and will not be merged.
