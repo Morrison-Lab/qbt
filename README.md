@@ -23,7 +23,6 @@ This template provides everything you need to quickly start writing your own boo
 - 🔍 **PR Preview** with change highlighting for pull requests
 - ✅ **Automated checks** including spell checking and linting
 - 🤖 **GitHub Copilot integration** with custom setup steps
-- 📝 **AI-powered issue summaries** for new issues
 
 ## Quick Start
 
@@ -190,14 +189,6 @@ Configures the GitHub Copilot coding agent's environment with Quarto and TinyTeX
 
 **Triggers:** Workflow dispatch, changes to the setup file
 
-### 📝 Issue Summary Workflow (`summary.yml`)
-
-Automatically generates AI-powered summaries for newly opened issues.
-
-**Triggers:** New issue opened
-
-**Permissions required:** The `models: read` permission for AI inference
-
 ### 📚 Check Bibliography DOIs Workflow (`check-bibliography-dois.yml`)
 
 Validates that all books and articles in bibliography files meet DOI requirements:
@@ -234,7 +225,6 @@ Validates that all books and articles in bibliography files meet DOI requirement
             ├── check-spelling.yaml  # Spell checking
             ├── lint-project.yaml    # R code linting
             ├── copilot-setup-steps.yml  # GitHub Copilot setup
-            ├── summary.yml      # AI-powered issue summaries
             ├── check-links.yml  # URL reachability checker workflow
             └── check-bibliography-dois.yml  # Bibliography DOI validation
 
