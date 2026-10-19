@@ -154,7 +154,7 @@
     "href": "appendix-document-metadata.html",
     "title": "Document Generation Metadata",
     "section": "",
-    "text": "This document was generated from the following git commit:\n\nBranch: claude/remove-summary-workflow\nCommit: e351f64\nFull commit hash: e351f645d20486155aa16da0e36c54ccbf71832c\nCommit date: 2026-10-19 03:39:12 -0700\n\nWhen transferring edits from this document back to the Quarto source files, use this commit information to set up the PR correctly and account for any commits that have been added since this document was generated.",
+    "text": "This document was generated from the following git commit:\n\nBranch: claude/remove-summary-workflow\nCommit: a5e4150\nFull commit hash: a5e41505914de61d5b46f28a7c61408b5590ff41\nCommit date: 2026-10-19 10:52:19 +0000\n\nWhen transferring edits from this document back to the Quarto source files, use this commit information to set up the PR correctly and account for any commits that have been added since this document was generated.",
     "crumbs": [
       "Appendices",
       "Document Generation Metadata"
