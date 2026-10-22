@@ -11,7 +11,7 @@ Apply them to a new repo, after creating it from the template, with:
 ```
 
 The script is idempotent - re-running it updates a ruleset in place when
-one with the same `name` already exists, rather than creating a duplicate.
+one with the same `name` already exists (or one named `protect-default-branch`, the shared base ruleset), rather than creating a duplicate.
 
 Requirements:
 

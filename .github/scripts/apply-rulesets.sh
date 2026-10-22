@@ -10,7 +10,8 @@
 
 # "protect-default-branch" is the shared base ruleset's name in
 # Morrison-Lab/ai-config; it counts as the same ruleset, so a repo that has
-# it is updated in place rather than given a second one.
+# it is updated in place rather than given a second one,
+# unless the repo also has a ruleset named like the example, which wins.
 set -euo pipefail
 
 command -v jq >/dev/null 2>&1 || { echo "error: jq is required but not found" >&2; exit 1; }
@@ -36,7 +37,7 @@ for f in "${files[@]}"; do
     echo "skipping $f: missing .name field" >&2
     continue
   fi
-  id=$(jq -r --arg n "$name" 'map(select(.name == $n or .name == "protect-default-branch")) | .[0].id // empty' <<<"$existing")
+  id=$(jq -r --arg n "$name" '(map(select(.name == $n)) + map(select(.name == "protect-default-branch"))) | .[0].id // empty' <<<"$existing")
   if [ -n "$id" ]; then
     echo "updating ruleset '$name' (id $id) on $repo"
     gh api -X PUT "repos/$repo/rulesets/$id" --input "$f" >/dev/null
