@@ -1,7 +1,11 @@
 project:
   type: book
   output-dir: docs
-  pre-render: pre-render.py
+  pre-render:
+    # install-extensions.py runs first: it fetches the custom-callout
+    # extension that the HTML filters below need.
+    - tools/install-extensions.py
+    - pre-render.py
   resources:
     - macros/macros.qmd
 
@@ -29,8 +33,64 @@ bibliography: references.bib
 filters:
   - d-morrison/code-language-labels
 
+
+# Theorem-type and exercise divs render as colored callouts, as in lds and
+# Morrison-Lab/rme: `callouty-theorem` wraps each `#def-`, `#exr-`,
+# `#exm-` ... div in a callout, and `custom-callout` gives each type its color.
+# These blocks follow lds's `_quarto-website.yml`. HTML only: the PDF, Word
+# and EPUB outputs keep Quarto's own theorem headings.
+callouty-theorem:
+  thm:
+    callout:
+      type: lem
+  lem:
+    callout:
+      type: lem
+  cor:
+    callout:
+      type: cor
+  prp:
+    callout:
+      type: prp
+  cnj:
+    callout:
+      type: cnj
+  def:
+    callout:
+      type: def
+  exm:
+    callout:
+      type: exm
+      icon: false
+  exr:
+    callout:
+      type: exr
+
+custom-callout:
+  lem:
+    color: "#1565C0"  # royal blue (also used for thm)
+  cor:
+    color: "#00838F"  # dark cyan
+  prp:
+    color: "#827717"  # dark olive
+  cnj:
+    color: "#558B2F"  # grass green
+  def:
+    color: "#1B5E20"  # forest green
+  exm:
+    color: "#6A1B9A"  # deep purple
+  exr:
+    color: "#FFA500"  # orange
+
 format:
   html:
+    filters:
+      - Morrison-Lab/callouty-theorem
+      # By path, not extension name: Quarto looks extensions up before a
+      # `pre-render` script runs, so the copy that tools/install-extensions.py
+      # fetches would not be found by name.
+      - _extensions/coatless-quarto/custom-callout/customcallout.lua
+      - _extensions/coatless-quarto/custom-callout/fa.lua
     theme:
       light: cosmo
       dark: darkly

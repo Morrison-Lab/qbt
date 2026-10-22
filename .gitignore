@@ -76,3 +76,6 @@ lychee-output/
 
 # Claude Code (personal overrides; project settings are committed)
 .claude/settings.local.json
+
+# Fetched by tools/install-extensions.py (no license published); see lds.
+_extensions/coatless-quarto/custom-callout/
