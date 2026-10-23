@@ -44,6 +44,9 @@ jobs:
       # previews too. Never leave this empty: empty selects a legacy branch that
       # renders html plus only the formats requested by `preview:*` labels.
       formats: default
+      # gha's default 45-minute cap cancels the preview of a full re-render of a
+      # grown site (lds, sds and mds each raised it).
+      timeout-minutes: 120
       # Rebuild when this label is added or removed (it toggles highlighting below).
       extra-preview-labels: '["no-preview-highlights"]'
       # Compare against the published render: banner on the home page, highlighted
