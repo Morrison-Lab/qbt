@@ -1,0 +1,11 @@
+# Configuration for crate-ci/typos, run by .github/workflows/check-typos.yml.
+#
+# Each entry is a spelling typos reads as a mistake but that is kept on
+# purpose. Add one only after checking it really should stay.
+[default.extend-words]
+# Quarto's crossref prefix for a theorem, a key in `callouty-theorem:`.
+thm = "thm"
+
+[files]
+# Vendored extensions are not ours to respell.
+extend-exclude = ["_extensions/"]
