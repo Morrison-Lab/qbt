@@ -3,15 +3,15 @@
 # Run once after creating a new repo from this template. Idempotent: a
 # ruleset whose `name` already exists on the repo is updated in place rather
 # than duplicated.
+# "protect-default-branch" is the shared base ruleset's name in
+# Morrison-Lab/ai-config and counts as the same ruleset; a ruleset named like
+# the example wins when both exist. Updating in place sends the example's
+# whole body, so a matched protect-default-branch ruleset takes the example's
+# name and rules.
 #
 # Requires: gh CLI authenticated with admin access to the repo.
 # Usage:    .github/scripts/apply-rulesets.sh [owner/repo]
 #           Defaults to the gh-detected current repo.
-
-# "protect-default-branch" is the shared base ruleset's name in
-# Morrison-Lab/ai-config; it counts as the same ruleset, so a repo that has
-# it is updated in place rather than given a second one,
-# unless the repo also has a ruleset named like the example, which wins.
 set -euo pipefail
 
 command -v jq >/dev/null 2>&1 || { echo "error: jq is required but not found" >&2; exit 1; }
