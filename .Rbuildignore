@@ -13,3 +13,5 @@ _freeze/
 ^README\.Rmd$
 ^data-raw$
 ^\.quarto$
+^AGENTS\.md$
+^\.claude$
