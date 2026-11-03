@@ -1,0 +1,13 @@
+name: Cancel Superseded Runs
+
+on:
+  pull_request:
+    types: [synchronize, closed]
+
+permissions:
+  actions: write
+  pull-requests: read
+
+jobs:
+  cancel:
+    uses: Morrison-Lab/gha/.github/workflows/cancel-superseded.yml@v3
