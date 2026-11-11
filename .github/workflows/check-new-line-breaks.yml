@@ -14,7 +14,7 @@ jobs:
   check:
     permissions:
       contents: read
-    uses: Morrison-Lab/gha/.github/workflows/check-new-line-breaks.yml@v2
+    uses: Morrison-Lab/gha/.github/workflows/check-new-line-breaks.yml@v3
     with:
       # README.md is generated from README.Rmd; fix line breaks at the source.
       paths-ignore: 'README.md'
