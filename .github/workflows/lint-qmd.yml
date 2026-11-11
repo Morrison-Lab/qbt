@@ -14,7 +14,7 @@ jobs:
   lint:
     permissions:
       contents: read
-    uses: Morrison-Lab/gha/.github/workflows/lint-qmd.yml@v2
+    uses: Morrison-Lab/gha/.github/workflows/lint-qmd.yml@v3
     with:
       # Warn-only for now: first run over a pre-existing tree.
       fail: false

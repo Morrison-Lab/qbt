@@ -7,7 +7,7 @@
 # so the caller must grant issues: write even though issue-filing only happens on
 # main. (A split read-only-PR / writable-main caller startup-fails for this reason.)
 #
-# Pinned to the @v2 moving major tag.
+# Pinned to the @v3 moving major tag.
 name: Check Links
 
 on:
@@ -34,6 +34,6 @@ jobs:
       contents: read
       issues: write
       pull-requests: read
-    uses: Morrison-Lab/gha/.github/workflows/check-links.yml@v2
+    uses: Morrison-Lab/gha/.github/workflows/check-links.yml@v3
     with:
       lychee-config: lychee.toml

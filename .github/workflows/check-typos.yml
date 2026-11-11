@@ -16,4 +16,4 @@ jobs:
   check:
     permissions:
       contents: read
-    uses: Morrison-Lab/gha/.github/workflows/check-typos.yml@v2
+    uses: Morrison-Lab/gha/.github/workflows/check-typos.yml@v3

@@ -3,7 +3,7 @@
 # run pushes commits, and also allows manual re-review from the Actions UI.
 #
 # qbt keeps its repo-specific review guidance here as prompt-addendum input.
-# Pinned to the @v2 moving major tag.
+# Pinned to the @v3 moving major tag.
 name: Claude Code Review
 
 on:
@@ -24,7 +24,8 @@ jobs:
       issues: write
       id-token: write
       actions: read
-    uses: Morrison-Lab/gha/.github/workflows/claude-code-review.yml@v2
+      checks: read   # claude-code-review@v3 reads check runs (gha#830)
+    uses: Morrison-Lab/gha/.github/workflows/claude-code-review.yml@v3
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       SUBMODULES_TOKEN: ${{ secrets.SUBMODULES_TOKEN }}

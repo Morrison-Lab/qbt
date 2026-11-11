@@ -1,5 +1,5 @@
 # Validates DOIs in the repo's .bib files, via the reusable workflow in
-# Morrison-Lab/gha. Pinned to the @v2 moving major tag.
+# Morrison-Lab/gha. Pinned to the @v3 moving major tag.
 name: Check Bibliography DOIs
 
 on:
@@ -15,4 +15,4 @@ jobs:
     # other gha caller in this repo already does this.
     permissions:
       contents: read
-    uses: Morrison-Lab/gha/.github/workflows/check-bibliography-dois.yml@v2
+    uses: Morrison-Lab/gha/.github/workflows/check-bibliography-dois.yml@v3

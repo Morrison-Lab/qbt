@@ -27,7 +27,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
-    uses: Morrison-Lab/gha/.github/workflows/cleanup-pr-previews.yml@v2
+      actions: read   # cleanup-pr-previews@v3 asks for it
+    uses: Morrison-Lab/gha/.github/workflows/cleanup-pr-previews.yml@v3
     # preview-dir defaults to `pr-preview`, which matches the directory
     # rossjrw/pr-preview-action publishes to in preview.yml.
     with:

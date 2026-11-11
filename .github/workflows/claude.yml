@@ -3,7 +3,7 @@
 # a real token. The reusable workflow enforces the @claude mention + trusted-author
 # gate, so no caller-side `if:` is needed.
 #
-# Pinned to the @v2 moving major tag — the upstream-recommended consumer pin.
+# Pinned to the @v3 moving major tag — the upstream-recommended consumer pin.
 name: Claude Code
 
 on:
@@ -24,7 +24,7 @@ jobs:
       issues: write
       id-token: write
       actions: write
-    uses: Morrison-Lab/gha/.github/workflows/claude.yml@v2
+    uses: Morrison-Lab/gha/.github/workflows/claude.yml@v3
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       SUBMODULES_TOKEN: ${{ secrets.SUBMODULES_TOKEN }}

@@ -1,5 +1,5 @@
 # Flags curly quotes and en/em dashes in source files, via the reusable workflow
-# in Morrison-Lab/gha. Pinned to the @v2 moving major tag.
+# in Morrison-Lab/gha. Pinned to the @v3 moving major tag.
 name: Check Non-Standard Characters
 
 on:
@@ -15,4 +15,4 @@ jobs:
     # the repository default.
     permissions:
       contents: read
-    uses: Morrison-Lab/gha/.github/workflows/check-non-standard-chars.yml@v2
+    uses: Morrison-Lab/gha/.github/workflows/check-non-standard-chars.yml@v3
